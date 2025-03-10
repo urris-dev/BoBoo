@@ -6,3 +6,6 @@
 
 # Database migrations
 migrations/versions
+
+# User's files
+media/

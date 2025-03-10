@@ -1,8 +1,11 @@
+from contextlib import asynccontextmanager
 from database import base_ormar_config
+from dotenv import dotenv_values
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
+from starlette.middleware.sessions import SessionMiddleware
 from typing import AsyncIterator
+from users.api import user_router
 
 
 def get_lifespan(config):
@@ -29,7 +32,11 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+env = dotenv_values(".env")
+app.add_middleware(SessionMiddleware, secret_key=env.get("SESSION_SECRET_KEY"))
+
 @app.get("/")
 def home():
     return {"message": "Hello from BoBoo-FastAPI!"}
 
+app.include_router(user_router, prefix="/users")
