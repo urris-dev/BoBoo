@@ -1,0 +1,104 @@
+.sign-up-form-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 56px;
+
+  .form-container {
+    width: 480px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    header {
+      .circle {
+        width: 48px;
+        height: 48px;
+        background-color: rgba(28, 29, 34, 0.25);
+        border-radius: 50%;
+      }
+
+      h1 {
+        font-size: 32px;
+        line-height: 48px;
+        margin-top: 16px;
+      }
+
+      p {
+        font-size: 16px;
+        line-height: 28px;
+      }
+    }
+
+    main {
+      margin-top: 40px;
+      flex-grow: 1;
+
+      .sign-up-form {
+        height: 100%;
+        position: relative;
+
+        .input-container {
+          display: flex;
+          flex-direction: column;
+
+          label {
+            font-size: 16px;
+            line-height: 24px;
+            color: rgba(28, 29, 34, 0.5);
+          }
+
+          input {
+            height: 42px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(28, 29, 34, 0.2);
+
+            font-size: 16px;
+            line-height: 16px;
+            color: rgba(28, 29, 34, 0.8);
+            font-family: 'Exo 2', sans-serif;
+          }
+        }
+
+        .input-container:not(:first-of-type) {
+          margin-top: 24px;
+        }
+
+        > p {
+          font-size: 16px;
+          line-height: 28px;
+          color: rgba(28, 29, 34, 0.5);
+        }
+
+        .buttons-container {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          position: absolute;
+          bottom: 0;
+
+          .registerbtn {
+            width: 200px;
+            height: 42px;
+            border-radius: 32px;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.25);
+
+            > p {
+              font-size: 20px;
+              font-family: 'Exo 2', sans-serif;
+              margin-bottom: 4px;
+              color: white;
+            }
+          }
+
+          p {
+            margin-bottom: 4px;
+          }
+        }
+      }
+    }
+  }
+}
