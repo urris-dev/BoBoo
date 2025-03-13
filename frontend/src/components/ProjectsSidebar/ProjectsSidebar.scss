@@ -1,0 +1,24 @@
+.projects-sidebar-container {
+  padding: 28px;
+
+  .projects-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+      font-size: 32px;
+    }
+
+    button {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+
+      .plus {
+        margin-top: 3px;
+      }
+    }
+  }
+}

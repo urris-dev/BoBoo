@@ -1,8 +1,7 @@
 .dashboard-container {
   max-width: 1100px;
-  height: calc(100vh - 4rem);
+  margin-bottom: 32px;
   display: flex;
-  justify-content: space-between;
   gap: 22px;
 
   .stage {

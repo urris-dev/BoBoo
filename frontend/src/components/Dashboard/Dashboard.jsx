@@ -1,11 +1,11 @@
-import './Dashboard.scss'
-
 import Task from '@/components/Task/Task.jsx'
 
+import './Dashboard.scss'
+
 export default function Dashboard({tasks}) {
-    const toDoTasks = tasks.filter(task => task.stage === "to do");
-    const inProgressTasks = tasks.filter(task => task.stage === "in progress");
-    const doneTasks = tasks.filter(task => task.stage === "done");
+    const toDoTasks = tasks.filter(task => task.stage === "to do")
+    const inProgressTasks = tasks.filter(task => task.stage === "in progress")
+    const doneTasks = tasks.filter(task => task.stage === "done")
 
     return (
         <div className="dashboard-container">
@@ -27,7 +27,7 @@ export default function Dashboard({tasks}) {
                         <Task
                             key={task.id}
                             task={task}
-                        />,
+                        />
                     )}
                 </div>
             </div>
@@ -43,5 +43,5 @@ export default function Dashboard({tasks}) {
                 </div>
             </div>
         </div>
-    );
+    )
 }

@@ -1,0 +1,25 @@
+.projects-header {
+  width: 100%;
+  height: 94px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .project-name {
+    font-size: 20px;
+    margin-bottom: 2px;
+  }
+
+  .header-menu {
+    width: 160px;
+    display: flex;
+    justify-content: space-between;
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #808080;
+    }
+  }
+}
