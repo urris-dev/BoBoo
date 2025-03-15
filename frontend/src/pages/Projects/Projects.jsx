@@ -1,12 +1,17 @@
+import { useSelector, useDispatch } from 'react-redux'
+
 import Dashboard from "@/components/Dashboard/Dashboard.jsx";
 import ProjectsSidebar from "@/components/ProjectsSidebar/ProjectsSidebar.jsx";
 import ProjectsHeader from "@/components/ProjectsHeader/ProjectsHeader.jsx";
 
-import { tasks } from '@/data.js'
-
 import './Projects.scss'
 
 export default function Projects() {
+    const projects = useSelector((state) => state.projects)
+    const dispatch = useDispatch();
+
+    console.log(projects)
+
     return (
         <>
             <div className="projects-container">
@@ -17,7 +22,7 @@ export default function Projects() {
                     <ProjectsHeader projectName={"Типа имя"} />
                 </div>
                 <div className="dashboard">
-                    <Dashboard tasks={tasks} />
+                    <Dashboard tasks={projects.projectsTasks.tasks} />
                 </div>
             </div>
         </>
