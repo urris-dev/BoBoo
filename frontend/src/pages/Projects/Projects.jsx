@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
+import { fetchProjectsList, fetchProjectsTasks } from '@/pages/Projects/projectsSlice.js'
 
 import Dashboard from "@/components/Dashboard/Dashboard.jsx";
 import ProjectsSidebar from "@/components/ProjectsSidebar/ProjectsSidebar.jsx";
@@ -10,7 +12,15 @@ export default function Projects() {
     const projects = useSelector((state) => state.projects)
     const dispatch = useDispatch();
 
-    console.log(projects)
+    useEffect(() => {
+        if (projects.status === 'idle') {
+            dispatch(fetchProjectsList());
+            dispatch(fetchProjectsTasks());
+        }
+    }, [projects.status, dispatch]);
+
+    console.log(projects.projectsList)
+    console.log(projects.projectsTasks)
 
     return (
         <>

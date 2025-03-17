@@ -3,6 +3,8 @@ import Task from '@/components/Task/Task.jsx'
 import './Dashboard.scss'
 
 export default function Dashboard({tasks}) {
+    if (tasks === undefined) return (<></>)
+
     const toDoTasks = tasks.filter(task => task.stage === "to do")
     const inProgressTasks = tasks.filter(task => task.stage === "in progress")
     const doneTasks = tasks.filter(task => task.stage === "done")
