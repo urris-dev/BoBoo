@@ -1,13 +1,13 @@
 from authlib.integrations.starlette_client import OAuth, OAuthError
-from dotenv import dotenv_values
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 from starlette.config import Config
-from . import _ENV_PATH, schemas, services, tokenizator
+from typing import Union
+
+from config import settings
+from . import ouath2, schemas, services
 
 
-env = dotenv_values(_ENV_PATH)
-
-config = Config(environ={"GOOGLE_CLIENT_ID": env.get("GOOGLE_CLIENT_ID"), "GOOGLE_CLIENT_SECRET": env.get("GOOGLE_CLIENT_SECRET")})
+config = Config(environ={"GOOGLE_CLIENT_ID": settings.GOOGLE_CLIENT_ID, "GOOGLE_CLIENT_SECRET": settings.GOOGLE_CLIENT_SECRET})
 oauth = OAuth(config)
 oauth.register(
     name='google',
@@ -24,26 +24,42 @@ async def google_login(request: Request):
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
-@user_router.get('/auth')
-async def google_auth(request: Request) -> schemas.Token | dict[str, str]:
+@user_router.get('/auth', response_model=schemas.ServerResponse)
+async def google_auth(request: Request, Authorize: ouath2.AuthJWT = Depends()):
     try:
         google_token = await oauth.google.authorize_access_token(request)
     except OAuthError:
-        return {"status": "error"}
+        return schemas.ServerResponse(status="error", msg="Ошибка при попытке входа через Google.")
     
-    return await services.create_user_with_google(google_token.get("userinfo"))
+    return await services.login_with_google(google_token.get("userinfo"), Authorize)
 
 
-@user_router.get('/decode-token')
-async def decode(token: str) -> schemas.UserData | dict:
-    return tokenizator.decode_token(token)
-
-
-@user_router.post("/register")
-async def register(user: schemas.UserRegister) -> dict[str, str]:
+@user_router.post("/register", response_model=schemas.ServerResponse)
+async def register(user: schemas.UserRegister):
     return await services.create_not_confirmed_user(user)
 
 
-@user_router.post("/confirm-email")
-async def confirm_email(code: str) -> schemas.Token:
+@user_router.post("/confirm-email", response_model=schemas.ServerResponse)
+async def confirm_email(code: str):
     return await services.create_user(code)
+
+
+@user_router.post("/login", response_model=schemas.ServerResponse)
+async def login(user: schemas.UserLogin, Authorize: ouath2.AuthJWT = Depends()):
+    return await services.login_user(user, Authorize)
+
+
+@user_router.delete("/logout", response_model=schemas.ServerResponse)
+async def logout(Authorize: ouath2.AuthJWT = Depends()):
+    Authorize.unset_jwt_cookies()
+    return schemas.ServerResponse(status="success")
+
+
+@user_router.post("/refresh", response_model=schemas.ServerResponse)
+async def refresh(Authorize: ouath2.AuthJWT = Depends()):
+    return await services.recreate_tokens(Authorize)
+
+
+@user_router.get("/about-me", response_model=Union[schemas.ServerResponse, dict[str, str]])
+async def user_about(Authorize: ouath2.AuthJWT = Depends()):
+    return await services.get_user_data(Authorize)

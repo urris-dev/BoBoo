@@ -1,10 +1,11 @@
 from contextlib import asynccontextmanager
 from database import base_ormar_config
-from dotenv import dotenv_values
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from typing import AsyncIterator
+
+from config import settings
 from users.api import user_router
 from users.services import delete_outdated_not_confirmed_users
 
@@ -25,7 +26,7 @@ def get_lifespan(config):
 
 app = FastAPI(lifespan=get_lifespan(base_ormar_config))
 
-origins = ["http://localhost:5173"]
+origins = [settings.CLIENT_ORIGIN]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -34,11 +35,10 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-env = dotenv_values(".env")
-app.add_middleware(SessionMiddleware, secret_key=env.get("SESSION_SECRET_KEY"))
+app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
 
 @app.get("/")
 def home():
     return {"message": "Hello from BoBoo-FastAPI!"}
 
-app.include_router(user_router, prefix="/users")
+app.include_router(user_router, prefix="/api/users")

@@ -1,12 +1,12 @@
 import databases
 import ormar
 import sqlalchemy
-from dotenv import dotenv_values
+
+from config import settings
 
 
-environment = dotenv_values('.env')
-DATABASE_URL = str(environment.get('DB_PATH'))
-ECHO = bool(environment.get('ECHO'))
+DATABASE_URL = settings.DB_PATH
+ECHO = settings.ECHO
 
 base_ormar_config = ormar.OrmarConfig(
     metadata=sqlalchemy.MetaData(),
