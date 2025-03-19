@@ -6,15 +6,16 @@ from . import _ENV_PATH, schemas
 
 env = dotenv_values(_ENV_PATH)
 
-ALGORITHM = "HS256"
+ALGORITHM = env.get("JWT_ALGORITHM")
 SECRET_KEY = env.get("JWT_SECRET_KEY")
+EXP = int(env.get("JWT_ACCESS_TOKEN_EXPIRES_IN"))
 
 
 def create_token(user_id: int, user_email: str) -> schemas.Token:
     payload = {
         "user_id": user_id,
         "user_email": user_email,
-        "exp": datetime.now(timezone.utc) + timedelta(hours=1),
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=EXP),
         "iat": datetime.now(timezone.utc),
         "nbf": datetime.now(timezone.utc)
     }

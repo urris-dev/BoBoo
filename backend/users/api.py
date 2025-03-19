@@ -19,21 +19,31 @@ user_router = APIRouter()
 
 
 @user_router.route('/google-login')
-async def login(request: Request):
-    redirect_uri = request.url_for('auth')
+async def google_login(request: Request):
+    redirect_uri = request.url_for('google_auth')
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
 @user_router.get('/auth')
-async def auth(request: Request) -> schemas.Token | dict:
+async def google_auth(request: Request) -> schemas.Token | dict[str, str]:
     try:
         google_token = await oauth.google.authorize_access_token(request)
     except OAuthError:
         return {"status": "error"}
     
-    return await services.create_user(google_token.get("userinfo"))
+    return await services.create_user_with_google(google_token.get("userinfo"))
 
 
 @user_router.get('/decode-token')
 async def decode(token: str) -> schemas.UserData | dict:
     return tokenizator.decode_token(token)
+
+
+@user_router.post("/register")
+async def register(user: schemas.UserRegister) -> dict[str, str]:
+    return await services.create_not_confirmed_user(user)
+
+
+@user_router.post("/confirm-email")
+async def confirm_email(code: str) -> schemas.Token:
+    return await services.create_user(code)

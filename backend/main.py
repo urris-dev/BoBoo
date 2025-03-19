@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from typing import AsyncIterator
 from users.api import user_router
+from users.services import delete_outdated_not_confirmed_users
 
 
 def get_lifespan(config):
@@ -13,6 +14,7 @@ def get_lifespan(config):
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         if not config.database.is_connected:
             await config.database.connect()
+            await delete_outdated_not_confirmed_users()
 
         yield
 

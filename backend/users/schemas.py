@@ -6,7 +6,6 @@ class GoogleUser(BaseModel):
     username: Annotated[str, Field(alias="name", min_length=1, max_length=50)]
     email: EmailStr
     photo: Annotated[str, Field(alias="picture")]
-    is_confirmed: Annotated[bool, Field(alias="email_verified")]
 
 
 class Token(BaseModel):
@@ -16,3 +15,9 @@ class Token(BaseModel):
 class UserData(BaseModel):
     user_id: int
     user_email: str
+
+
+class UserRegister(BaseModel):
+    username: Annotated[str, Field(min_length=1, max_length=50)]
+    email: EmailStr
+    password: Annotated[str, Field(min_length=8, max_length=255)]
