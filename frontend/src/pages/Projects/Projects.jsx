@@ -1,40 +1,49 @@
 import { useEffect } from "react";
+import { Routes, Route } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchProjectsList, fetchProjectsTasks } from '@/pages/Projects/projectsSlice.js'
 
+import {
+    fetchProjectsList, fetchProjectsTasks,
+    selectProjectsStatus, selectProjectsTasks,
+} from '@/pages/Projects/projectsSlice.js';
+
+import ProjectsLayout from "@/layouts/ProjectsLayout/ProjectsLayout.jsx";
 import Dashboard from "@/components/Dashboard/Dashboard.jsx";
-import ProjectsSidebar from "@/components/ProjectsSidebar/ProjectsSidebar.jsx";
-import ProjectsHeader from "@/components/ProjectsHeader/ProjectsHeader.jsx";
 
 import './Projects.scss'
 
 export default function Projects() {
-    const projects = useSelector((state) => state.projects)
+    const projectsStatus = useSelector(selectProjectsStatus)
+    const projectsTasks = useSelector(selectProjectsTasks)
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (projects.status === 'idle') {
-            dispatch(fetchProjectsList());
+        if (projectsStatus === 'idle') {
             dispatch(fetchProjectsTasks());
+            dispatch(fetchProjectsList());
         }
-    }, [projects.status, dispatch]);
-
-    console.log(projects.projectsList)
-    console.log(projects.projectsTasks)
+    }, [projectsStatus, dispatch]);
 
     return (
         <>
-            <div className="projects-container">
-                <div className="sidebar">
-                    <ProjectsSidebar />
-                </div>
-                <div className="header">
-                    <ProjectsHeader projectName={"Типа имя"} />
-                </div>
-                <div className="dashboard">
-                    <Dashboard tasks={projects.projectsTasks.tasks} />
-                </div>
-            </div>
+            <Routes>
+                <Route path="/" element={<ProjectsLayout />}>
+                    <Route index element={<div>эбля</div>} />
+                    <Route path=":id" element={<Dashboard tasksArray={projectsTasks}/>} />
+                </Route>
+            </Routes>
+
+            {/*<div className="projects-container">*/}
+            {/*    <div className="sidebar">*/}
+            {/*        <ProjectsSidebar projectsList={projectsList} />*/}
+            {/*    </div>*/}
+            {/*    <div className="header">*/}
+            {/*        <ProjectsHeader projectName={"Типа имя"} />*/}
+            {/*    </div>*/}
+            {/*    <Routes>*/}
+            {/*        <Route path='/:id' element={<Dashboard tasks={projectsTasks}/>} />*/}
+            {/*    </Routes>*/}
+            {/*</div>*/}
         </>
     )
 }

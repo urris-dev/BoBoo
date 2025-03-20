@@ -1,9 +1,16 @@
+import { useParams } from "react-router-dom"
+
 import Task from '@/components/Task/Task.jsx'
 
 import './Dashboard.scss'
 
-export default function Dashboard({tasks}) {
-    if (tasks === undefined) return (<></>)
+export default function Dashboard({tasksArray}) {
+    if (tasksArray.length === 0) return (<></>)
+
+    const { id } = useParams()
+    const tasks = tasksArray.find(obj => obj.id === id).tasks;
+
+    console.log(tasks)
 
     const toDoTasks = tasks.filter(task => task.stage === "to do")
     const inProgressTasks = tasks.filter(task => task.stage === "in progress")

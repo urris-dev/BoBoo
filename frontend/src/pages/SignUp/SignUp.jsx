@@ -1,6 +1,6 @@
 import {Routes, Route} from 'react-router-dom'
 
-import SignUpLogInLayout from "@/components/SignUpLogInLayout/SignUpLogInLayout.jsx"
+import SignUpLogInLayout from "@/layouts/SignUpLogInLayout/SignUpLogInLayout.jsx"
 import SignUpForm from "@/components/SignUpForm/SignUpForm.jsx"
 
 import './SignUp.scss'
