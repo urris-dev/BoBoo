@@ -4,9 +4,9 @@ from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"])
 
 
-async def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+async def hash_data(data: str) -> str:
+    return pwd_context.hash(data)
 
 
-async def verify_password(password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(password, hashed_password)
+async def verify_data(data: str, hashed_data: str) -> bool:
+    return pwd_context.verify(data, hashed_data)

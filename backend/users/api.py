@@ -15,7 +15,7 @@ oauth.register(
     client_kwargs={"scope": "openid email profile"}
 )
 
-user_router = APIRouter()
+user_router = APIRouter(tags=["users"])
 
 
 @user_router.route('/google-login')
@@ -40,8 +40,8 @@ async def register(user: schemas.UserRegister):
 
 
 @user_router.post("/confirm-email", response_model=schemas.ServerResponse)
-async def confirm_email(code: str):
-    return await services.create_user(code)
+async def confirm_email(user: schemas.UserConfirmEmail):
+    return await services.create_user(user)
 
 
 @user_router.post("/login", response_model=schemas.ServerResponse)
@@ -63,3 +63,18 @@ async def refresh(Authorize: ouath2.AuthJWT = Depends()):
 @user_router.get("/about-me", response_model=Union[schemas.ServerResponse, dict[str, str]])
 async def user_about(Authorize: ouath2.AuthJWT = Depends()):
     return await services.get_user_data(Authorize)
+
+
+@user_router.post("/send-password-reset-code", response_model=schemas.ServerResponse)
+async def password_reset(email: str):
+    return await services.password_reset(email)
+
+
+@user_router.post("/reset-password", response_model=schemas.ServerResponse)
+async def reset_password(user: schemas.UserResetPassword):
+    return await services.reset_password(user)
+
+
+@user_router.post("/change-password", response_model=schemas.ServerResponse)
+async def change_password(user: schemas.UserChangePassword, Authorize: ouath2.AuthJWT = Depends()):
+    return await services.change_password(user, Authorize)

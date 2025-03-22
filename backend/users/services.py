@@ -54,22 +54,26 @@ async def create_not_confirmed_user(user: schemas.UserRegister) -> schemas.Serve
     try:
         await models.NotConfirmedUser.objects.get(email=user.email)
     except:
-        code = await smtp.send_confirmation_mail(user.username, user.email)
-        user.password = await utils.hash_password(user.password)
+        code = await smtp.send_email_confirmation_code(user.username, user.email)
+        code = await utils.hash_data(code)
+        user.password = await utils.hash_data(user.password)
         await models.NotConfirmedUser.objects.create(**user.model_dump(), **{"confirmation_code": code})
     
     return schemas.ServerResponse(status="success")
 
 
-async def create_user(code: str) -> schemas.ServerResponse:
+async def create_user(user: schemas.UserConfirmEmail) -> schemas.ServerResponse:
     try:
-        user = await models.NotConfirmedUser.objects.get(confirmation_code=code)
+        _user = await models.NotConfirmedUser.objects.get(email=user.email)
     except:
-        return schemas.ServerResponse(status="error", msg="Пользователь с данным кодом подтверждения не найден.")
+        return schemas.ServerResponse(status="error", msg="Пользователь с данным адресом электронной почты не найден.")
     
-    user = schemas.UserRegister.model_validate(user, from_attributes=True)
-    user = await models.User.objects.create(**user.model_dump())
-    await models.NotConfirmedUser.objects.delete(confirmation_code=code)
+    if not(await utils.verify_data(user.confirmation_code, _user.confirmation_code)):
+        return schemas.ServerResponse(status="error", msg="Неправильный код подтверждения.")
+
+    user = schemas.UserRegister.model_validate(_user, from_attributes=True)
+    await models.User.objects.create(**user.model_dump())
+    await _user.delete()
 
     return schemas.ServerResponse(status="success")
 
@@ -80,7 +84,7 @@ async def login_user(user: schemas.UserLogin, Authorize: ouath2.AuthJWT) -> sche
     except:
         return schemas.ServerResponse(status="error", msg="Неправильная почта или пароль.")
     
-    if not(await utils.verify_password(user.password, _user.password)):
+    if not(await utils.verify_data(user.password, _user.password)):
         return schemas.ServerResponse(status="error", msg="Неправильная почта или пароль.")
     
     access_token = Authorize.create_access_token(subject=user.email)
@@ -114,3 +118,57 @@ async def get_user_data(Authorize: ouath2.AuthJWT):
 
     user_email = Authorize.get_jwt_subject()
     return {"your_email": user_email}
+
+
+async def change_user_account_password(email: str, new_password: str):
+    user = await models.User.objects.get(email=email)
+    user.password = await utils.hash_data(new_password)
+    await user.update(["password"])
+
+
+async def password_reset(email: str) -> schemas.ServerResponse:
+    try:
+        user = await models.User.objects.get(email=email)
+    except:
+        return schemas.ServerResponse(status="error", msg="Пользователь с данным адресом электронной почты не найден.")
+    
+    try:
+        await models.ResetPasswordUser.objects.get(email=user.email)
+    except:
+        code = await smtp.send_password_reset_code(user.username, user.email)
+        code = await utils.hash_data(code)
+        await models.ResetPasswordUser.objects.create(**{"email": user.email, "confirmation_code": code})
+    
+    return schemas.ServerResponse(status="success")
+
+
+async def reset_password(user: schemas.UserResetPassword) -> schemas.ServerResponse:
+    try:
+        _user = await models.ResetPasswordUser.objects.get(email=user.email)
+    except:
+        return schemas.ServerResponse(status="error", msg="Пользователь с данным адресом электронной почты не найден.")
+
+    if not(await utils.verify_data(user.confirmation_code, _user.confirmation_code)):
+        return schemas.ServerResponse(status="error", msg="Неправильный код подтверждения.")
+
+    await change_user_account_password(email=_user.email, new_password=user.new_password)
+    await _user.delete()
+    return schemas.ServerResponse(status="success")
+
+
+async def change_password(user: schemas.UserChangePassword, Authorize: ouath2.AuthJWT) -> schemas.ServerResponse:
+    try:
+        Authorize.jwt_required()
+    except:
+        return schemas.ServerResponse(status="error", msg="Срок действия токена доступа истёк.")
+
+    email = Authorize.get_jwt_subject()
+    _user = await models.User.objects.get(email=email)
+
+    if not(await utils.verify_data(user.old_password, _user.password)):
+        return schemas.ServerResponse(status="error", msg="Неправильный старый пароль.")
+    
+    await change_user_account_password(email=_user.email, new_password=user.new_password)
+    Authorize.unset_jwt_cookies()
+    return schemas.ServerResponse(status="success")
+    
