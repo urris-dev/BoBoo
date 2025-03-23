@@ -15,7 +15,7 @@ function App() {
                         element={<Projects />}
                     />
                     <Route
-                        path={'/signup'}
+                        path={'/signup/*'}
                         element={<SignUp />}
                     />
                 </Routes>
