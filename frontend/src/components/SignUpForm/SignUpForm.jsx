@@ -42,7 +42,6 @@ export default function SignUpForm() {
                 })
             })
                 .then(() => {
-                    const navigate = useNavigate();
                     navigate("confirm-email");
                 })
         } else {

@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import './ConfirmEmailForm.scss'
-import {useNavigate} from "react-router-dom";
 
 export default function ConfirmEmailForm() {
     const navigate = useNavigate();
