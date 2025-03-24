@@ -32,7 +32,9 @@ export default function SignUpForm() {
         if (isUsernameLengthCorrect && isPasswordLengthCorrect && isPasswordConfirm) {
             fetch('http://127.0.0.1:8000/api/users/send-email-confirmation-code', {
                 method: 'POST',
-                headers: {},
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
                     username: username,
                     email: email,
@@ -41,7 +43,7 @@ export default function SignUpForm() {
             })
                 .then(() => {
                     const navigate = useNavigate();
-                    navigate("/confirm-email");
+                    navigate("confirm-email");
                 })
         } else {
             alert('хуй тебе')

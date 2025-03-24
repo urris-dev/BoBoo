@@ -4,6 +4,7 @@ import './ConfirmEmailForm.scss'
 import {useNavigate} from "react-router-dom";
 
 export default function ConfirmEmailForm() {
+    const navigate = useNavigate();
     const [code, setCode] = useState('');
 
     function confirmEmail(event) {
@@ -18,7 +19,6 @@ export default function ConfirmEmailForm() {
             })
         })
             .then(() => {
-                const navigate = useNavigate();
                 navigate("");
             })
     }
@@ -32,7 +32,7 @@ export default function ConfirmEmailForm() {
                     <p>Уже есть аккаунт? Войти</p>
                 </header>
                 <main>
-                    <form className="confirm-email-form">
+                    <form onSubmit={confirmEmail} className="confirm-email-form">
                         <div className="input-container">
                             <label htmlFor="username">Код подтверждения</label>
                             <input
