@@ -1,26 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { confirmEmail } from "@/store/authSlice.js";
 
 import './ConfirmEmailForm.scss'
 
 export default function ConfirmEmailForm() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [code, setCode] = useState('');
 
-    function confirmEmail(event) {
+    function submitConfirmEmail(event) {
         event.preventDefault()
-
-        fetch('http://127.0.0.1:8000/api/users/confirm-email', {
-            method: 'POST',
-            headers: {},
-            body: JSON.stringify({
-                email: email,
-                code: code
-            })
-        })
-            .then(() => {
-                navigate("");
-            })
+        dispatch(confirmEmail({code}))
+        navigate("/")
     }
 
     return (
@@ -32,7 +26,7 @@ export default function ConfirmEmailForm() {
                     <p>Уже есть аккаунт? Войти</p>
                 </header>
                 <main>
-                    <form onSubmit={confirmEmail} className="confirm-email-form">
+                    <form onSubmit={submitConfirmEmail} className="confirm-email-form">
                         <div className="input-container">
                             <label htmlFor="username">Код подтверждения</label>
                             <input

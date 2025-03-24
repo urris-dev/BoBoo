@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
     fetchProjectsList, fetchProjectsTasks,
     selectProjectsStatus, selectProjectsTasks,
-} from '@/pages/Projects/projectsSlice.js';
+} from '@/store/projectsSlice.js';
 
 import ProjectsLayout from "@/layouts/ProjectsLayout/ProjectsLayout.jsx";
 import Dashboard from "@/components/Dashboard/Dashboard.jsx";

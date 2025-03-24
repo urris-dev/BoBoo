@@ -2,7 +2,7 @@ import plus from "@/../public/plus.svg"
 
 import { useSelector } from "react-redux";
 
-import { selectProjectsList } from "@/pages/Projects/projectsSlice.js";
+import { selectProjectsList } from "@/store/projectsSlice.js";
 
 import './ProjectsSidebar.scss'
 

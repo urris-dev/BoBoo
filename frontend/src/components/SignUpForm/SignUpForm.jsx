@@ -3,6 +3,10 @@ import show from '@/../public/show.png'
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { setUserData } from "@/store/userDataSlice.js";
+import { signupUser } from "@/store/authSlice.js";
 
 import GoogleButton from "@/components/GoogleButton/GoogleButton.jsx";
 
@@ -10,6 +14,7 @@ import './SignUpForm.scss'
 
 export default function SignUpForm() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -22,7 +27,7 @@ export default function SignUpForm() {
         setPasswordVisibility(!isPasswordVisible)
     }
 
-    function submitForm(event) {
+    async function submitForm(event) {
         event.preventDefault()
 
         const isUsernameLengthCorrect = username.length >= 1 && username.length <= 50
@@ -30,20 +35,9 @@ export default function SignUpForm() {
         const isPasswordConfirm = password === confirmPassword
 
         if (isUsernameLengthCorrect && isPasswordLengthCorrect && isPasswordConfirm) {
-            fetch('http://127.0.0.1:8000/api/users/send-email-confirmation-code', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: username,
-                    email: email,
-                    password: password
-                })
-            })
-                .then(() => {
-                    navigate("confirm-email");
-                })
+            dispatch(setUserData({username, email}));
+            await dispatch(signupUser({password}));
+            navigate("confirm-email");
         } else {
             alert('хуй тебе')
         }
