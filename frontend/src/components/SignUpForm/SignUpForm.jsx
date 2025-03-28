@@ -22,24 +22,28 @@ export default function SignUpForm() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
+    function isDataValid() {
+        const isUsernameLengthCorrect = username.length >= 1 && username.length <= 50;
+        const isPasswordLengthCorrect = password.length >= 8 && password.length <= 60;
+        const isPasswordConfirm = password === confirmPassword;
+
+        return isUsernameLengthCorrect && isPasswordLengthCorrect && isPasswordConfirm;
+    }
+
     function switchPasswordVisibility(event) {
         event.stopPropagation()
         setPasswordVisibility(!isPasswordVisible)
     }
 
     async function submitForm(event) {
-        event.preventDefault()
+        event.preventDefault();
 
-        const isUsernameLengthCorrect = username.length >= 1 && username.length <= 50
-        const isPasswordLengthCorrect = password.length >= 8 && password.length <= 100
-        const isPasswordConfirm = password === confirmPassword
-
-        if (isUsernameLengthCorrect && isPasswordLengthCorrect && isPasswordConfirm) {
+        if (isDataValid()) {
             dispatch(setUserData({username, email}));
             await dispatch(signupUser({password}));
             navigate("confirm-email");
         } else {
-            alert('хуй тебе')
+            alert('ошибка')
         }
     }
 
@@ -65,6 +69,7 @@ export default function SignUpForm() {
                             <input
                                 type="email" name="email" required={true}
                                 value={email} onChange={(event) => setEmail(event.target.value)}
+                                maxLength={60}
                             />
                         </div>
                         <div className="input-container password-input-container">
@@ -72,7 +77,7 @@ export default function SignUpForm() {
                             <input
                                 type={isPasswordVisible ? "text" : "password"} name="password" required={true}
                                 value={password} onChange={(event => setPassword(event.target.value))}
-                                minLength={8} maxLength={100}
+                                minLength={8} maxLength={60}
                             />
                             <img
                                 className="password-icon" onClick={switchPasswordVisibility}
@@ -95,11 +100,12 @@ export default function SignUpForm() {
                         <p>Пароль должен содержать от 8 букв, цифр и прочих символов</p>
 
                         <div className="buttons-container">
-                            <button type="submit" className="registerbtn"><p>Создать аккаунт</p></button>
+                            <button type="submit" className={"registerbtn" + (isDataValid() ? " active" : "")}><p>Создать аккаунт</p></button>
                             <p>или</p>
                             <GoogleButton />
                         </div>
                     </form>
+                    {/*<GoogleButton onClick={() => console.log(url)} />*/}
                 </main>
             </div>
             <div className="img-container"></div>
