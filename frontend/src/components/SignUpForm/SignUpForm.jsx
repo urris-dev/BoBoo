@@ -105,7 +105,6 @@ export default function SignUpForm() {
                             <GoogleButton />
                         </div>
                     </form>
-                    {/*<GoogleButton onClick={() => console.log(url)} />*/}
                 </main>
             </div>
             <div className="img-container"></div>
