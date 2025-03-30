@@ -6,15 +6,15 @@ from config import settings
 
 
 class GoogleUser(BaseModel):
-    username: Annotated[str, Field(alias="name", min_length=1, max_length=50)]
+    username: Annotated[str, Field(min_length=1, max_length=50)]
     email: Annotated[EmailStr, Field(max_length=255)]
-    photo: Annotated[str, Field(alias="picture")]
+    photo: Annotated[str, Field]
 
 
 class UserRegister(BaseModel):
     username: Annotated[str, Field(min_length=1, max_length=50)]
     email: Annotated[EmailStr, Field(max_length=255)]
-    password: Annotated[str, Field(min_length=8, max_length=100)]
+    password: Annotated[str, Field(min_length=8, max_length=60)]
 
     @field_validator("password", mode="before")
     def validate_pswd(cls, value):
@@ -26,7 +26,7 @@ class UserRegister(BaseModel):
 
 class UserLogin(BaseModel):
     email: Annotated[EmailStr, Field(max_length=255)]
-    password: Annotated[str, Field(min_length=8, max_length=100)]
+    password: Annotated[str, Field(min_length=8, max_length=60)]
 
     @field_validator("password", mode="before")
     def validate_pswd(cls, value):
@@ -38,13 +38,13 @@ class UserLogin(BaseModel):
 
 class UserConfirmEmail(BaseModel):
     email: Annotated[EmailStr, Field(max_length=255)]
-    confirmation_code: Annotated[str, Field(alias="code", min_length=36, max_length=36)]
+    confirmation_code: Annotated[str, Field(alias="code", min_length=7, max_length=7)]
 
 
 class UserResetPassword(BaseModel):
     email: Annotated[EmailStr, Field(max_length=255)]
-    confirmation_code: Annotated[str, Field(alias="code", min_length=36, max_length=36)]
-    new_password: Annotated[str, Field(alias="password", min_length=8, max_length=100)]
+    confirmation_code: Annotated[str, Field(alias="code", min_length=7, max_length=7)]
+    new_password: Annotated[str, Field(alias="password", min_length=8, max_length=60)]
 
     @field_validator("new_password", mode="before")
     def validate_pswd(cls, value):
@@ -55,8 +55,8 @@ class UserResetPassword(BaseModel):
 
 
 class UserChangePassword(BaseModel):
-    old_password: Annotated[str, Field(min_length=8, max_length=100)]
-    new_password: Annotated[str, Field(min_length=8, max_length=100)]
+    old_password: Annotated[str, Field(min_length=8, max_length=60)]
+    new_password: Annotated[str, Field(min_length=8, max_length=60)]
 
     @field_validator("new_password", mode="before")
     def validate_pswd(cls, value):

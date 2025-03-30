@@ -1,40 +1,18 @@
-from authlib.integrations.starlette_client import OAuth, OAuthError
-from fastapi import APIRouter, Depends, Request
-from starlette.config import Config
+from fastapi import APIRouter, Depends
 from typing import Union
 
-from config import settings
 from . import ouath2, schemas, services
 
-
-config = Config(environ={"GOOGLE_CLIENT_ID": settings.GOOGLE_CLIENT_ID, "GOOGLE_CLIENT_SECRET": settings.GOOGLE_CLIENT_SECRET})
-oauth = OAuth(config)
-oauth.register(
-    name='google',
-    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-    client_kwargs={"scope": "openid email profile"}
-)
 
 user_router = APIRouter(tags=["users"])
 
 
-@user_router.route('/google-login')
-async def google_login(request: Request):
-    redirect_uri = request.url_for('google_auth')
-    return await oauth.google.authorize_redirect(request, redirect_uri)
+@user_router.post('/google-login', response_model=schemas.ServerResponse)
+async def google_login(user: schemas.GoogleUser, Authorize: ouath2.AuthJWT = Depends()):
+    return await services.login_with_google(user, Authorize)
 
 
-@user_router.get('/auth', response_model=schemas.ServerResponse)
-async def google_auth(request: Request, Authorize: ouath2.AuthJWT = Depends()):
-    try:
-        google_token = await oauth.google.authorize_access_token(request)
-    except OAuthError:
-        return schemas.ServerResponse(status="error", msg="Ошибка при попытке входа через Google.")
-    
-    return await services.login_with_google(google_token.get("userinfo"), Authorize)
-
-
-@user_router.post("/register", response_model=schemas.ServerResponse)
+@user_router.post("/send-email-confirmation-code", response_model=schemas.ServerResponse)
 async def register(user: schemas.UserRegister):
     return await services.create_not_confirmed_user(user)
 

@@ -18,10 +18,9 @@ class User(ormar.Model):
     id: int = ormar.Integer(primary_key=True)
     username: str = ormar.String(nullable=False, max_length=50)
     email: str = ormar.String(index=True, unique=True, nullable=False, max_length=255)
-    password: Optional[str] = ormar.String(nullable=True, max_length=140)
+    password: Optional[str] = ormar.String(nullable=True, max_length=60)
     photo: Optional[str] = ormar.String(nullable=True, max_length=500)
     friends: Optional[List["User"]] = ormar.ManyToMany(UserRef, through=Friendship)
-
 
 User.update_forward_refs()
 
@@ -31,7 +30,7 @@ class NotConfirmedUser(ormar.Model):
 
     username: str = ormar.String(nullable=False, max_length=50)
     email: str = ormar.String(primary_key=True, max_length=255)
-    password: str = ormar.String(nullable=False, max_length=140)
+    password: str = ormar.String(nullable=False, max_length=60)
     confirmation_code: str = ormar.String(nullable=False, max_length=60)
     create_at: date = ormar.Date(server_default=func.now())
 

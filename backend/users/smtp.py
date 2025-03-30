@@ -1,6 +1,5 @@
 from email.mime.text import MIMEText
 from smtplib import SMTP
-from uuid import uuid4
 
 from config import settings
 
@@ -12,14 +11,13 @@ SMTP_PASSWORD = settings.SMTP_APPLICATION_PASSWORD
 SERVER_ORIGIN = settings.SERVER_ORIGIN
 
 
-async def send_email_confirmation_code(username: str, user_email: str) -> str: 
-    code = str(uuid4())
+async def send_email_confirmation_code(username: str, user_email: str, code: str) -> str: 
     body = f"""
     Приветствуем, {username}!
 
     Благодарим Вас за интерес к нашему сервису BoBoo! Для завершения процесса регистрации аккаунта просим Вас подтвердить адрес электронной почты, перейдя по ссылке ниже и введя специальный код.
     
-    Ссылка: {SERVER_ORIGIN}/confirm-email
+    Ссылка: {settings.CLIENT_ORIGIN}/signup/confirm-email
     Код подтверждения: {code}
 
     Если Вы не регистрировались на BoBoo, пожалуйста проигнорируйте это письмо."""
@@ -36,8 +34,7 @@ async def send_email_confirmation_code(username: str, user_email: str) -> str:
     return code
 
 
-async def send_password_reset_code(username: str, user_email: str) -> str: 
-    code = str(uuid4())
+async def send_password_reset_code(username: str, user_email: str, code: str) -> str: 
     body = f"""
     Приветствуем, {username}!
 

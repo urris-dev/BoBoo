@@ -28,8 +28,6 @@ async def save_user_photo(url: str, username: str) -> str:
 
 
 async def login_with_google(user: schemas.GoogleUser, Authorize: ouath2.AuthJWT) -> schemas.ServerResponse:
-    user = schemas.GoogleUser.model_validate(user, from_attributes=True)
-
     try:
         await models.User.objects.get(email=user.email)
     except:
@@ -52,9 +50,18 @@ async def create_not_confirmed_user(user: schemas.UserRegister) -> schemas.Serve
     except: pass
 
     try:
-        await models.NotConfirmedUser.objects.get(email=user.email)
+        _user = await models.NotConfirmedUser.objects.get(email=user.email)
+        code = await utils.generate_confirm_code()
+        await smtp.send_email_confirmation_code(_user.username, _user.email, code)
+
+        _user.username = user.username
+        _user.password = await utils.hash_data(user.password)
+        _user.confirmation_code = await utils.hash_data(code)
+        await _user.update(["username", "password", "confirmation_code"])
     except:
-        code = await smtp.send_email_confirmation_code(user.username, user.email)
+        code = await utils.generate_confirm_code()
+        await smtp.send_email_confirmation_code(user.username, user.email, code)
+
         code = await utils.hash_data(code)
         user.password = await utils.hash_data(user.password)
         await models.NotConfirmedUser.objects.create(**user.model_dump(), **{"confirmation_code": code})
@@ -133,9 +140,16 @@ async def password_reset(email: str) -> schemas.ServerResponse:
         return schemas.ServerResponse(status="error", msg="Пользователь с данным адресом электронной почты не найден.")
     
     try:
-        await models.ResetPasswordUser.objects.get(email=user.email)
+        _user = await models.ResetPasswordUser.objects.get(email=user.email)
+        code = await utils.generate_confirm_code()
+        await smtp.send_password_reset_code(user.username, user.email, code)
+
+        _user.confirmation_code = await utils.hash_data(code)
+        await _user.update(["confirmation_code"])
     except:
-        code = await smtp.send_password_reset_code(user.username, user.email)
+        code = await utils.generate_confirm_code()
+        await smtp.send_password_reset_code(user.username, user.email, code)
+
         code = await utils.hash_data(code)
         await models.ResetPasswordUser.objects.create(**{"email": user.email, "confirmation_code": code})
     

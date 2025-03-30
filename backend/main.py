@@ -1,3 +1,4 @@
+from aiocron import crontab
 from contextlib import asynccontextmanager
 from database import base_ormar_config
 from fastapi import FastAPI
@@ -15,7 +16,6 @@ def get_lifespan(config):
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         if not config.database.is_connected:
             await config.database.connect()
-            await delete_outdated_not_confirmed_users()
 
         yield
 
@@ -23,6 +23,7 @@ def get_lifespan(config):
             await config.database.disconnect()
     return lifespan
 
+crontab("1 3 * * *", func=delete_outdated_not_confirmed_users)
 
 app = FastAPI(lifespan=get_lifespan(base_ormar_config))
 
