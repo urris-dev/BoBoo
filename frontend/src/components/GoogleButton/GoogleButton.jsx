@@ -1,7 +1,7 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
 
-import { setUserPhoto } from "@/store/userDataSlice.js";
+import { setUserData, setUserPhoto } from "@/store/userDataSlice.js";
 import { googleLogin } from "@/store/authSlice.js";
 
 import './GoogleButton.scss'
@@ -11,19 +11,25 @@ export default function GoogleButton() {
 
     const login = useGoogleLogin({
         onSuccess: async tokenResponse => {
-            // console.log(tokenResponse);
+            console.log(tokenResponse);
             const resp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
                 headers: {
                     Authorization: `Bearer ${tokenResponse.access_token}`
                 },
             });
             const userInfo = await resp.json();
-            // console.log(userInfo);
+            console.log(`${userInfo.picture}`);
 
-            dispatch(setUserPhoto(userInfo.picture));
+            const username = userInfo.name;
+            const email = userInfo.email;
+            const photo = userInfo.picture;
+
+            dispatch(setUserData({username, email}));
+            dispatch(setUserPhoto({photo}));
+
             await dispatch(googleLogin());
         },
-    })
+    });
 
     return (
         <button type="button" onClick={() => login()} className="gsi-material-button">
