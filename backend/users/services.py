@@ -1,9 +1,13 @@
 from aiohttp import ClientSession
 from datetime import date
+from fastapi.responses import Response
+from fastapi.exceptions import HTTPException
 from os import mkdir, path
+from typing import Union
 
+import oauth2
 from config import settings
-from . import models, ouath2, schemas, smtp, utils, _BASE_DIR
+from . import models, schemas, smtp, utils, _BASE_DIR
 
 
 JWT_ACCESS_TOKEN_EXPIRES_IN = settings.JWT_ACCESS_TOKEN_EXPIRES_IN * 60
@@ -27,7 +31,7 @@ async def save_user_photo(url: str, username: str) -> str:
     return file_path
 
 
-async def login_with_google(user: schemas.GoogleUser, Authorize: ouath2.AuthJWT) -> schemas.ServerResponse:
+async def login_with_google(user: schemas.GoogleUser, Authorize: oauth2.AuthJWT) -> Response:
     try:
         await models.User.objects.get(email=user.email)
     except:
@@ -40,14 +44,16 @@ async def login_with_google(user: schemas.GoogleUser, Authorize: ouath2.AuthJWT)
     Authorize.set_access_cookies(access_token, max_age=JWT_ACCESS_TOKEN_EXPIRES_IN)
     Authorize.set_refresh_cookies(refresh_token, max_age=JWT_REFRESH_TOKEN_EXPIRES_IN)
 
-    return schemas.ServerResponse(status="success")
+    return Response(status_code=200)
 
 
-async def create_not_confirmed_user(user: schemas.UserRegister) -> schemas.ServerResponse:
+async def create_not_confirmed_user(user: schemas.UserRegister) -> Union[HTTPException, Response]:
     try:
         await models.User.objects.get(email=user.email)
-        return schemas.ServerResponse(status="error", msg="Данный пользователь уже зарегистрирован.")
-    except: pass
+        raise HTTPException(status_code=409, detail="Данный пользователь уже зарегистрирован.")
+    except HTTPException as e:
+        raise e
+    except:pass
 
     try:
         _user = await models.NotConfirmedUser.objects.get(email=user.email)
@@ -66,63 +72,53 @@ async def create_not_confirmed_user(user: schemas.UserRegister) -> schemas.Serve
         user.password = await utils.hash_data(user.password)
         await models.NotConfirmedUser.objects.create(**user.model_dump(), **{"confirmation_code": code})
     
-    return schemas.ServerResponse(status="success")
+    return Response(status_code=200)
 
 
-async def create_user(user: schemas.UserConfirmEmail) -> schemas.ServerResponse:
+async def create_user(user: schemas.UserConfirmEmail) -> Union[HTTPException, Response]:
     try:
         _user = await models.NotConfirmedUser.objects.get(email=user.email)
     except:
-        return schemas.ServerResponse(status="error", msg="Пользователь с данным адресом электронной почты не найден.")
-    
+        raise HTTPException(status_code=404, detail="Пользователь с данным адресом электронной почты не найден.")
+
     if not(await utils.verify_data(user.confirmation_code, _user.confirmation_code)):
-        return schemas.ServerResponse(status="error", msg="Неправильный код подтверждения.")
+        raise HTTPException(status_code=400, detail="Неправильный код подтверждения.")
 
     user = schemas.UserRegister.model_validate(_user, from_attributes=True)
     await models.User.objects.create(**user.model_dump())
     await _user.delete()
 
-    return schemas.ServerResponse(status="success")
+    return Response(status_code=200)
 
 
-async def login_user(user: schemas.UserLogin, Authorize: ouath2.AuthJWT) -> schemas.ServerResponse:
+async def login_user(user: schemas.UserLogin, Authorize: oauth2.AuthJWT) -> Union[HTTPException, Response]:
     try:
         _user = await models.User.objects.get(email=user.email)
     except:
-        return schemas.ServerResponse(status="error", msg="Неправильная почта или пароль.")
+        raise HTTPException(status_code=400, detail="Неправильная почта или пароль.")
     
     if not(await utils.verify_data(user.password, _user.password)):
-        return schemas.ServerResponse(status="error", msg="Неправильная почта или пароль.")
+        raise HTTPException(status_code=400, detail="Неправильная почта или пароль.")
     
     access_token = Authorize.create_access_token(subject=user.email)
     refresh_token = Authorize.create_refresh_token(subject=user.email)
     Authorize.set_access_cookies(access_token, max_age=JWT_ACCESS_TOKEN_EXPIRES_IN)
     Authorize.set_refresh_cookies(refresh_token, max_age=JWT_REFRESH_TOKEN_EXPIRES_IN)
 
-    return schemas.ServerResponse(status="success")
+    return Response(status_code=200)
 
 
-async def recreate_tokens(Authorize: ouath2.AuthJWT) -> schemas.ServerResponse:
-    try:
-        Authorize.jwt_refresh_token_required()
-    except:
-        return schemas.ServerResponse(status="error", msg="Срок действия токена обновления истёк.")
-    
+async def recreate_tokens(Authorize: oauth2.AuthJWT) -> Response:
     email = Authorize.get_jwt_subject()
     access_token = Authorize.create_access_token(subject=email)
     refresh_token = Authorize.create_refresh_token(subject=email)
     Authorize.set_access_cookies(access_token, max_age=JWT_ACCESS_TOKEN_EXPIRES_IN)
     Authorize.set_refresh_cookies(refresh_token, max_age=JWT_REFRESH_TOKEN_EXPIRES_IN)
 
-    return schemas.ServerResponse(status="success")
+    return Response(status_code=200)
 
 
-async def get_user_data(Authorize: ouath2.AuthJWT):
-    try:
-        Authorize.jwt_required()
-    except:
-        return schemas.ServerResponse(status="error", msg="Срок действия токена доступа истёк.")
-
+async def get_user_data(Authorize: oauth2.AuthJWT) -> dict[str, str]:
     user_email = Authorize.get_jwt_subject()
     return {"your_email": user_email}
 
@@ -133,11 +129,11 @@ async def change_user_account_password(email: str, new_password: str):
     await user.update(["password"])
 
 
-async def password_reset(email: str) -> schemas.ServerResponse:
+async def password_reset(email: str) -> Union[HTTPException, Response]:
     try:
         user = await models.User.objects.get(email=email)
     except:
-        return schemas.ServerResponse(status="error", msg="Пользователь с данным адресом электронной почты не найден.")
+        raise HTTPException(status_code=404, detail="Пользователь с данным адресом электронной почты не найден.")
     
     try:
         _user = await models.ResetPasswordUser.objects.get(email=user.email)
@@ -153,36 +149,36 @@ async def password_reset(email: str) -> schemas.ServerResponse:
         code = await utils.hash_data(code)
         await models.ResetPasswordUser.objects.create(**{"email": user.email, "confirmation_code": code})
     
-    return schemas.ServerResponse(status="success")
+    return Response(status_code=200)
 
 
-async def reset_password(user: schemas.UserResetPassword) -> schemas.ServerResponse:
+async def reset_password(user: schemas.UserResetPassword) -> Union[HTTPException, Response]:
     try:
         _user = await models.ResetPasswordUser.objects.get(email=user.email)
     except:
-        return schemas.ServerResponse(status="error", msg="Пользователь с данным адресом электронной почты не найден.")
+        raise HTTPException(status_code=404, detail="Пользователь с данным адресом электронной почты не найден.")
 
     if not(await utils.verify_data(user.confirmation_code, _user.confirmation_code)):
-        return schemas.ServerResponse(status="error", msg="Неправильный код подтверждения.")
+        raise HTTPException(status_code=400, detail="Неправильный код подтверждения.")
 
     await change_user_account_password(email=_user.email, new_password=user.new_password)
     await _user.delete()
-    return schemas.ServerResponse(status="success")
+    return Response(status_code=200)
 
 
-async def change_password(user: schemas.UserChangePassword, Authorize: ouath2.AuthJWT) -> schemas.ServerResponse:
+async def change_password(user: schemas.UserChangePassword, Authorize: oauth2.AuthJWT) -> Union[HTTPException, Response]:
     try:
         Authorize.jwt_required()
     except:
-        return schemas.ServerResponse(status="error", msg="Срок действия токена доступа истёк.")
+        raise HTTPException(status_code=401, detail="Срок действия токена доступа истёк.")
 
     email = Authorize.get_jwt_subject()
     _user = await models.User.objects.get(email=email)
 
     if not(await utils.verify_data(user.old_password, _user.password)):
-        return schemas.ServerResponse(status="error", msg="Неправильный старый пароль.")
+        raise HTTPException(status_code=400, detail="Неправильный старый пароль.")
     
     await change_user_account_password(email=_user.email, new_password=user.new_password)
     Authorize.unset_jwt_cookies()
-    return schemas.ServerResponse(status="success")
+    return Response(status_code=200)
     

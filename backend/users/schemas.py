@@ -64,8 +64,3 @@ class UserChangePassword(BaseModel):
         if not fullmatch(pattern, value):
             raise ValueError("Неверный формат пароля.")
         return value
-
-
-class ServerResponse(BaseModel):
-    status: str
-    msg: Optional[str] = ""

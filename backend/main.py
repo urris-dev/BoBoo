@@ -8,8 +8,11 @@ from typing import AsyncIterator
 
 from config import settings
 from users.api import user_router
+from projects.api import project_router
 from users.services import delete_outdated_not_confirmed_users
 
+from projects.models import Project
+from users.models import User
 
 def get_lifespan(config):
     @asynccontextmanager
@@ -42,4 +45,5 @@ app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
 def home():
     return {"message": "Hello from BoBoo-FastAPI!"}
 
-app.include_router(user_router, prefix="/api/users")
+app.include_router(user_router)
+app.include_router(project_router)

@@ -16,6 +16,7 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from database import base_ormar_config, DATABASE_URL
+import projects.models
 import users.models
 
 target_metadata = base_ormar_config.metadata
