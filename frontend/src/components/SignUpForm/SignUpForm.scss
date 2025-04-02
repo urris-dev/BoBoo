@@ -96,7 +96,6 @@
             width: 200px;
             height: 42px;
             border-radius: 32px;
-            cursor: pointer;
             background-color: rgba(0, 0, 0, 0.2);
 
             > p {
@@ -109,6 +108,7 @@
 
           .registerbtn.active {
             background-color: rgba(0, 0, 0, 0.6);
+            cursor: pointer;
           }
 
           p {

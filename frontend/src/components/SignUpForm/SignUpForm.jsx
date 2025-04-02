@@ -39,9 +39,16 @@ export default function SignUpForm() {
         event.preventDefault();
 
         if (isDataValid()) {
-            dispatch(setUserData({username, email}));
-            await dispatch(signupUser({password}));
-            navigate("confirm-email");
+            try {
+                dispatch(setUserData({username, email}));
+                const resp = await dispatch(signupUser({password}));
+                if (!resp.ok) {
+                    throw new SyntaxError("сервер не доступенз");
+                }
+                navigate("confirm-email");
+            } catch (error) {
+                alert(error);
+            }
         } else {
             alert('ошибка')
         }

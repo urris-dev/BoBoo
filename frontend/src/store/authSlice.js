@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { useNavigate } from "react-router-dom";
 
 import store from "@/store/store.js"
 
@@ -10,7 +9,7 @@ export const signupUser = createAsyncThunk(
         const authData = state.auth;
         const userData = state.userData;
 
-        await fetch(new URL('send-email-confirmation-code', authData.baseApiURL).href, {
+        return fetch(new URL('send-email-confirmation-code', authData.baseApiURL).href, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -20,7 +19,7 @@ export const signupUser = createAsyncThunk(
                 email: userData.email,
                 password: password
             })
-        })
+        });
     }
 );
 
