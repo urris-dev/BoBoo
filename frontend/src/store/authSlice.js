@@ -41,7 +41,28 @@ export const confirmEmail = createAsyncThunk(
             })
         })
     }
-)
+);
+
+export const googleLogin = createAsyncThunk(
+    'auth/googleLogin',
+    async function () {
+        const state = store.getState();
+        const authData = state.auth;
+        const userData = state.userData;
+
+        await fetch(new URL('google-login', authData.baseApiURL).href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: userData.username,
+                email: userData.email,
+                photo: userData.photo,
+            }),
+        });
+    },
+);
 
 const authSlice = createSlice({
     name: 'auth',

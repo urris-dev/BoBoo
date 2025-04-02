@@ -5,17 +5,21 @@ const userDataSlice = createSlice({
     initialState: {
         username: '',
         email: '',
+        photo: '',
     },
     reducers: {
         setUserData(state, action) {
             state.username = action.payload.username;
             state.email = action.payload.email;
-        }
+        },
+        setUserPhoto(state, action) {
+            state.photo = action.payload.photo;
+        },
     }
 });
 
 export default userDataSlice.reducer;
-export const { setUserData } = userDataSlice.actions;
+export const { setUserData, setUserPhoto } = userDataSlice.actions;
 
 export const selectUsername = (state) => state.userData.username;
 export const selectEmail = (state) => state.userData.email;
