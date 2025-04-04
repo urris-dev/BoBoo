@@ -7,11 +7,13 @@ from starlette.middleware.sessions import SessionMiddleware
 from typing import AsyncIterator
 
 from config import settings
-from users.api import user_router
 from projects.api import project_router
-from users.services import delete_outdated_not_confirmed_users
+from tasks.api import task_router
+from users.api import user_router
+from users.services import delete_outdated_not_confirmed_users, delete_outdated_reset_password_users
 
 from projects.models import Project
+from tasks.models import Task
 from users.models import User
 
 def get_lifespan(config):
@@ -27,6 +29,7 @@ def get_lifespan(config):
     return lifespan
 
 crontab("1 3 * * *", func=delete_outdated_not_confirmed_users)
+crontab("2 3 * * *", func=delete_outdated_reset_password_users)
 
 app = FastAPI(lifespan=get_lifespan(base_ormar_config))
 
@@ -47,3 +50,4 @@ def home():
 
 app.include_router(user_router)
 app.include_router(project_router)
+app.include_router(task_router)

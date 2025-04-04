@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, EmailStr, field_validator
 from re import fullmatch
-from typing import Annotated, Optional
+from typing import Annotated
 
 from config import settings
 
@@ -8,7 +8,7 @@ from config import settings
 class GoogleUser(BaseModel):
     username: Annotated[str, Field(min_length=1, max_length=50)]
     email: Annotated[EmailStr, Field(max_length=255)]
-    photo: Annotated[str, Field]
+    photo: str
 
 
 class UserRegister(BaseModel):

@@ -12,7 +12,7 @@ Authentication is required for certain endpoints using JWT Authentication.
 ### Basic Authentication
 To authenticate requests, use JWT Authentication. Provide your Cookie files containing access and refresh tokens with each request.
 
-## Error Handling (new)
+## Error Handling 
 The API uses standard HTTP status codes to indicate the success or failure of an API request. Additionally, error responses will include a JSON object with a message field providing more details about the error.
 
 ## Endpoints
@@ -23,10 +23,10 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
 #### Auth with Google
 - **Method:** POST
 - **URL:** `/google-login/`
-- **Parameters:** JSON object of GoogleUser class.
 - **Description:** Authorizes the user using Google.
+- **Parameters:** JSON object of GoogleUser class.
 - **Response:** 
-  - Response with status code 200 **(new)**
+  - Response with status code 200 
   - Adds access and refresh tokens to Cookie files
 
 #### Register not confirmed user
@@ -34,7 +34,7 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
 - **URL:** `/send-email-confirmation-code/`
 - **Description:** Creates a new user with not confirmed email, sends confirmation code to email.
 - **Parameters:** JSON object of UserRegister class.
-- **Response:**  **(new)**
+- **Response:**  
   - Response with status code 200 or
   - HTTPException with status code 409
 
@@ -43,16 +43,16 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
 - **URL:** `/confirm-email/`
 - **Description:** Creates a new user with confirmed email.
 - **Parameters:** JSON object of UserConfirmEmail class.
-- **Response:** **(new)**
+- **Response:** 
   - Response with status code 200 or
-  - HTTPException with status code 400
+  - HTTPException with status code 400 or 404
 
 #### Login user account
 - **Method:** POST
 - **URL:** `/login/`
 - **Description:** Login user account.
 - **Parameters:** JSON object of UserLogin class.
-- **Response:**  **(new)**
+- **Response:**  
   - Response with status code 200
   - Adds access and refresh tokens to Cookie files or 
   - HTTPException with status code 400
@@ -62,7 +62,7 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
 - **URL:** `/logout/`
 - **Description:** Logout user account.
 - **Parameters:** Cookie files containing access and refresh tokens.
-- **Response:**  **(new)**
+- **Response:**  
   - Response with status code 200
   - Deletes access and refresh tokens from Cookie files
 
@@ -71,7 +71,7 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
 - **URL:** `/refresh/`
 - **Description:** Updates access and refresh tokens.
 - **Parameters:** Cookie files containing refresh token.
-- **Response:** **(new)**
+- **Response:** 
   - Response with status code 200
   - Sets new access and refresh tokens in Cookie files or
   - HTTPException with status code 401
@@ -82,31 +82,31 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
 - **Description:** Sends password reset code to user's email.
 - **Parameters:**
 	- `email: string` Email field with maximum length in 255 characters.
-- **Response:** **(new)**
+- **Response:** 
   - Response with status code 200 or
-  - HTTPException with status code 400
+  - HTTPException with status code 404
 
 #### Reset user account password (2)
-- **Method:** POST
+- **Method:** PATCH **(new)**
 - **URL:** `/reset-password/`
 - **Description:** Resets user account password.
 - **Parameters:** JSON object of UserResetPassword class.
-- **Response:** **(new)**
+- **Response:** 
   - Response with status code 200 or
   - HTTPException with status code 400 or 404
 
 #### Change user account password
-- **Method:** POST
+- **Method:** PATCH **(new)**
 - **URL:** `/change-password/`
 - **Description:** Changes user account password, logs out of user account.
 - **Parameters:**
 	- Cookie files containing access and refresh token.
 	- JSON object of UserChangePassword class.
-- **Response:** **(new)**
+- **Response:** 
   - Response with status code 200 or
   - HTTPException with status code 400 or 401
 
-### Projects (new)
+### Projects 
 The base URL for projects endpoints is `http://127.0.0.1:8000/api/projects`.
 
 #### Get a list of projects
@@ -137,21 +137,64 @@ The base URL for projects endpoints is `http://127.0.0.1:8000/api/projects`.
   - JSON object of Project class.
 - **Response:** 
   - Response with status code 200
-  - HTTPException with status code 401 or 404
+  - HTTPException with status code 401 or 403 or 404
 
 #### Delete project
-- **Method**: POST
+- **Method**: DELETE
 - **URL** `/delete-project/`
 - **Parameters**:
   - Cookie files containing access and refresh token.
   - `project_id: integer` Unique project identifier.
 - **Response:**
   - Response with status code 200
-  - HTTPException with status code 401 or 404
+  - HTTPException with status code 401 or 403 or 404
+
+### Tasks (new)
+The base URL for projects endpoints is `http://127.0.0.1:8000/api/tasks`.
+
+#### Get a list of tasks for a project
+- **Method:** GET
+- **URL:** `/get-tasks-list/`
+- **Parameters:** 
+  - Cookie files containing access and refresh token.
+  - `project_id: integer` Unique project identifier.
+- **Response:** 
+  - List of JSON objects of Task class or
+  - HTTPException with status code 401 or 403
+
+#### Create task
+- **Method**: POST
+- **URL** `/create-task/`
+- **Parameters**:
+  - Cookie files containing access and refresh token.
+  - JSON object of TaskCreate class.
+- **Response:** 
+  - `task_id: integer` or
+  - HTTPException with status code 401 or 403 or 404
+
+#### Edit task
+- **Method**: PUT
+- **URL** `/edit-task/`
+- **Parameters**:
+  - Cookie files containing access and refresh token.
+  - JSON object of TaskEdit class.
+- **Response:**
+  - Response with status code 200
+  - HTTPException with status code 401 or 403 or 404
+
+#### Delete task
+- **Method**: DELETE
+- **URL** `/delete-task/`
+- **Parameters**:
+  - Cookie files containing access and refresh token.
+  - JSON object of TaskDelete class.
+- **Response:**
+  - Response with status code 200
+  - HTTPException with status code 401 or 403 or 404
 
 ## Data Models
 
-### HTTPException (new)
+### HTTPException 
 A type of standardized Internet error.
 - `details: string`
 
@@ -186,9 +229,35 @@ A type of standardized Internet error.
 - `old_password: string` Old user account password with length from 8 to 60 characters. 
 - `new_password: string` New user account password with length from 8 to 60 characters. 
 
-### Project (new)
+### Project 
 - `id: integer` Unique project identifier.
 - `title: string` Project name field with max length in 50 characters.
+
+### Task (new)
+- `id: integer` 
+- `title: string` 
+- `description: string` 
+- `priority: string` 
+- `status: string`
+
+### TaskCreate (new)
+- `title: string` Task name field with max length in 50 characters.
+- `description: string` Task description field without max length. **(Optional)**
+- `priority: string` Task priority field. Can be (High | Middle | Low).
+- `status: string` Task status field. Can be (Todo | In progress | Done).
+- `project_id: integer` Project identifier that the task belongs to.
+  
+### TaskEdit (new)
+- `id: integer` Unique task identifier.
+- `title: string` Task name field with max length in 50 characters.
+- `description: string` Task description field without max length. **(Optional)**
+- `priority: string` Task priority field. Can be (High | Middle | Low).
+- `status: string` Task status field. Can be (Todo | In progress | Done).
+- `project_id: integer` Project identifier that the task belongs to.
+
+### TaskDelete (new)
+- `task_id: integer` Unique task identifier.
+- `project_id: integer` Project identifier that the task belongs to.
 
 ## Conclusion
 This concludes the documentation for the Boboo API. 

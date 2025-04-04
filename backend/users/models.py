@@ -10,12 +10,14 @@ UserRef = ForwardRef("User")
 
 class Friendship(ormar.Model):
     ormar_config = base_ormar_config.copy(tablename='frienships')
+    
+    id: int = ormar.BigInteger(primary_key=True)
 
 
 class User(ormar.Model):
     ormar_config = base_ormar_config.copy(tablename='users')
 
-    id: int = ormar.Integer(primary_key=True)
+    id: int = ormar.BigInteger(primary_key=True)
     username: str = ormar.String(nullable=False, max_length=50)
     email: str = ormar.String(index=True, unique=True, nullable=False, max_length=255)
     password: Optional[str] = ormar.String(nullable=True, max_length=60)
@@ -40,3 +42,5 @@ class ResetPasswordUser(ormar.Model):
 
     email: str = ormar.String(primary_key=True, max_length=255)
     confirmation_code: str = ormar.String(nullable=False, max_length=60)
+    create_at: date = ormar.Date(server_default=func.now())
+    

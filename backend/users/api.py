@@ -21,7 +21,7 @@ async def register(user: schemas.UserRegister):
     return await services.create_not_confirmed_user(user)
 
 
-@user_router.post("/confirm-email", responses={400: {}})
+@user_router.post("/confirm-email", responses={400: {}, 404: {}})
 async def confirm_email(user: schemas.UserConfirmEmail):
     return await services.create_user(user)
 
@@ -33,8 +33,9 @@ async def login(user: schemas.UserLogin, Authorize: oauth2.AuthJWT = Depends()):
 
 @user_router.delete("/logout")
 async def logout(Authorize: oauth2.AuthJWT = Depends()):
-    Authorize.unset_jwt_cookies()
-    return Response(status_code=200)
+    response = Response(status_code=200) 
+    Authorize.unset_jwt_cookies(response)
+    return response
 
 
 @user_router.post("/refresh", dependencies=[Depends(check_refresh_token)], responses={401: {}})
@@ -52,11 +53,11 @@ async def password_reset(email: str):
     return await services.password_reset(email)
 
 
-@user_router.post("/reset-password", responses={400: {}, 404: {}})
+@user_router.patch("/reset-password", responses={400: {}, 404: {}})
 async def reset_password(user: schemas.UserResetPassword):
     return await services.reset_password(user)
 
 
-@user_router.post("/change-password", responses={400: {}, 401: {}})
+@user_router.patch("/change-password", dependencies=[Depends(check_access_token)], responses={400: {}, 401: {}})
 async def change_password(user: schemas.UserChangePassword, Authorize: oauth2.AuthJWT = Depends()):
     return await services.change_password(user, Authorize)

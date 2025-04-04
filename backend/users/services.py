@@ -16,7 +16,10 @@ JWT_REFRESH_TOKEN_EXPIRES_IN = settings.JWT_REFRESH_TOKEN_EXPIRES_IN * 60
 
 async def delete_outdated_not_confirmed_users():
     await models.NotConfirmedUser.objects.delete(create_at__lt=date.today())
-    
+
+async def delete_outdated_reset_password_users():
+    await models.ResetPasswordUser.objects.delete(create_at__lt=date.today())
+
 
 async def save_user_photo(url: str, username: str) -> str:
     dir_path = path.join(_BASE_DIR, "media", username)
@@ -41,10 +44,11 @@ async def login_with_google(user: schemas.GoogleUser, Authorize: oauth2.AuthJWT)
 
     access_token = Authorize.create_access_token(subject=user.email)
     refresh_token = Authorize.create_refresh_token(subject=user.email)
-    Authorize.set_access_cookies(access_token, max_age=JWT_ACCESS_TOKEN_EXPIRES_IN)
-    Authorize.set_refresh_cookies(refresh_token, max_age=JWT_REFRESH_TOKEN_EXPIRES_IN)
+    response = Response(status_code=200)
+    Authorize.set_access_cookies(access_token, response, max_age=JWT_ACCESS_TOKEN_EXPIRES_IN)
+    Authorize.set_refresh_cookies(refresh_token, response, max_age=JWT_REFRESH_TOKEN_EXPIRES_IN)
 
-    return Response(status_code=200)
+    return response
 
 
 async def create_not_confirmed_user(user: schemas.UserRegister) -> Union[HTTPException, Response]:
@@ -102,20 +106,22 @@ async def login_user(user: schemas.UserLogin, Authorize: oauth2.AuthJWT) -> Unio
     
     access_token = Authorize.create_access_token(subject=user.email)
     refresh_token = Authorize.create_refresh_token(subject=user.email)
-    Authorize.set_access_cookies(access_token, max_age=JWT_ACCESS_TOKEN_EXPIRES_IN)
-    Authorize.set_refresh_cookies(refresh_token, max_age=JWT_REFRESH_TOKEN_EXPIRES_IN)
+    response = Response(status_code=200)
+    Authorize.set_access_cookies(access_token, response, max_age=JWT_ACCESS_TOKEN_EXPIRES_IN)
+    Authorize.set_refresh_cookies(refresh_token, response, max_age=JWT_REFRESH_TOKEN_EXPIRES_IN)
 
-    return Response(status_code=200)
+    return response
 
 
 async def recreate_tokens(Authorize: oauth2.AuthJWT) -> Response:
     email = Authorize.get_jwt_subject()
     access_token = Authorize.create_access_token(subject=email)
     refresh_token = Authorize.create_refresh_token(subject=email)
-    Authorize.set_access_cookies(access_token, max_age=JWT_ACCESS_TOKEN_EXPIRES_IN)
-    Authorize.set_refresh_cookies(refresh_token, max_age=JWT_REFRESH_TOKEN_EXPIRES_IN)
+    response = Response(status_code=200)
+    Authorize.set_access_cookies(access_token, response, max_age=JWT_ACCESS_TOKEN_EXPIRES_IN)
+    Authorize.set_refresh_cookies(refresh_token, response, max_age=JWT_REFRESH_TOKEN_EXPIRES_IN)
 
-    return Response(status_code=200)
+    return response
 
 
 async def get_user_data(Authorize: oauth2.AuthJWT) -> dict[str, str]:
@@ -167,11 +173,6 @@ async def reset_password(user: schemas.UserResetPassword) -> Union[HTTPException
 
 
 async def change_password(user: schemas.UserChangePassword, Authorize: oauth2.AuthJWT) -> Union[HTTPException, Response]:
-    try:
-        Authorize.jwt_required()
-    except:
-        raise HTTPException(status_code=401, detail="Срок действия токена доступа истёк.")
-
     email = Authorize.get_jwt_subject()
     _user = await models.User.objects.get(email=email)
 
@@ -179,6 +180,7 @@ async def change_password(user: schemas.UserChangePassword, Authorize: oauth2.Au
         raise HTTPException(status_code=400, detail="Неправильный старый пароль.")
     
     await change_user_account_password(email=_user.email, new_password=user.new_password)
-    Authorize.unset_jwt_cookies()
-    return Response(status_code=200)
+    response = Response(status_code=200) 
+    Authorize.unset_jwt_cookies(response)
+    return response
     

@@ -11,7 +11,7 @@ SMTP_PASSWORD = settings.SMTP_APPLICATION_PASSWORD
 SERVER_ORIGIN = settings.SERVER_ORIGIN
 
 
-async def send_email_confirmation_code(username: str, user_email: str, code: str) -> str: 
+async def send_email_confirmation_code(username: str, user_email: str, code: str): 
     body = f"""
     Приветствуем, {username}!
 
@@ -31,10 +31,8 @@ async def send_email_confirmation_code(username: str, user_email: str, code: str
         server.login(SMTP_USER, SMTP_PASSWORD)
         server.sendmail(SMTP_USER, user_email, msg.as_string())
 
-    return code
 
-
-async def send_password_reset_code(username: str, user_email: str, code: str) -> str: 
+async def send_password_reset_code(username: str, user_email: str, code: str): 
     body = f"""
     Приветствуем, {username}!
 
@@ -53,5 +51,3 @@ async def send_password_reset_code(username: str, user_email: str, code: str) ->
         server.starttls()
         server.login(SMTP_USER, SMTP_PASSWORD)
         server.sendmail(SMTP_USER, user_email, msg.as_string())
-
-    return code

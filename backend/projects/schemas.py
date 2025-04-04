@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Annotated, Optional
+from typing import Annotated
 
 
 class Project(BaseModel):
