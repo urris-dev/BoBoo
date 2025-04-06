@@ -5,8 +5,8 @@ import { useDispatch } from "react-redux";
 import { setUserData } from "@/store/userDataSlice.js";
 import { signupUser } from "@/store/authSlice.js";
 
-import Input from "@/components/Input/Input.jsx";
-import Button from "@/components/Button/Button.jsx";
+import Input from "@/general/Input/Input.jsx";
+import Button from "@/general/Button/Button.jsx";
 import GoogleButton from "@/components/GoogleButton/GoogleButton.jsx";
 
 import './SignUpForm.scss'

@@ -1,0 +1,38 @@
+.popup {
+  width: 700px;
+  height: 400px;
+  margin: auto;
+  border-radius: 24px;
+  border: 2px rgba(28, 29, 34, 0.08) solid;
+  background-color: #fff;
+  padding: 24px;
+
+  .popupContent {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      height: 38px;
+    }
+
+    .form {
+      position: relative;
+      height: 100%;
+
+      .createProjectInput {
+        margin-top: 24px;
+      }
+
+      .button {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+    }
+  }
+}
