@@ -1,6 +1,3 @@
-import hide from '@/../public/hide.png'
-import show from '@/../public/show.png'
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -8,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setUserData } from "@/store/userDataSlice.js";
 import { signupUser } from "@/store/authSlice.js";
 
+import Input from "@/components/Input/Input.jsx";
 import GoogleButton from "@/components/GoogleButton/GoogleButton.jsx";
 
 import './SignUpForm.scss'
@@ -64,52 +62,62 @@ export default function SignUpForm() {
                 </header>
                 <main>
                     <form className="sign-up-form" onSubmit={submitForm}>
-                        <div className="input-container">
-                            <label htmlFor="username">Имя пользователя</label>
-                            <input
-                                type="text" name="username" required={true}
-                                value={username} onChange={(event) => setUsername(event.target.value)}
+                        <div className="sign-up-form-input">
+                            <Input
+                                className="input"
+                                label="Имя пользователя"
+                                type="text"
+                                name="username"
+                                required={true}
+                                value={username}
+                                onChange={(value) => setUsername(value)}
                             />
                         </div>
-                        <div className="input-container">
-                            <label htmlFor="email">Адрес электронной почты</label>
-                            <input
-                                type="email" name="email" required={true}
-                                value={email} onChange={(event) => setEmail(event.target.value)}
-                                maxLength={60}
+                        <div className="sign-up-form-input">
+                            <Input
+                                label="Адрес электронной почты"
+                                type="email"
+                                name="email"
+                                required={true}
+                                value={email}
+                                onChange={(value) => setEmail(value)}
                             />
                         </div>
-                        <div className="input-container password-input-container">
-                            <label htmlFor="password">Пароль</label>
-                            <input
-                                type={isPasswordVisible ? "text" : "password"} name="password" required={true}
-                                value={password} onChange={(event => setPassword(event.target.value))}
-                                minLength={8} maxLength={60}
-                            />
-                            <img
-                                className="password-icon" onClick={switchPasswordVisibility}
-                                src={isPasswordVisible ? hide : show} alt=""
-                            />
-                        </div>
-                        <div className="input-container password-input-container">
-                            <label htmlFor="confirm-password">Подтвердите пароль</label>
-                            <input
-                                type={isPasswordVisible ? "text" : "password"} name="confirm-password" required={true}
-                                value={confirmPassword} onChange={(event => setConfirmPassword(event.target.value))}
-                                minLength={8} maxLength={100}
-                                /*{onBlur = {() => alert(password === confirmPassword)}}*/
-                            />
-                            <img
-                                className="password-icon" onClick={switchPasswordVisibility}
-                                src={isPasswordVisible ? hide : show} alt=""
+                        <div className="sign-up-form-input">
+                            <Input
+                                label="Пароль"
+                                type="password"
+                                name="password"
+                                required={true}
+                                value={password}
+                                isPassword={true}
+                                isValueVisible={isPasswordVisible}
+                                onChange={(value) => setPassword(value)}
+                                onChangeVisible={() => setPasswordVisibility(!isPasswordVisible)}
                             />
                         </div>
+                        <div className="sign-up-form-input">
+                            <Input
+                                label="Подтвердите пароль"
+                                type="password"
+                                name="confirm-password"
+                                required={true}
+                                value={confirmPassword}
+                                isPassword={true}
+                                isValueVisible={isPasswordVisible}
+                                onChange={(value) => setConfirmPassword(value)}
+                                onChangeVisible={() => setPasswordVisibility(!isPasswordVisible)}
+                            />
+                        </div>
+
                         <p>Пароль должен содержать от 8 букв, цифр и прочих символов</p>
 
                         <div className="buttons-container">
-                            <button type="submit" className={"registerbtn" + (isDataValid() ? " active" : "")}><p>Создать аккаунт</p></button>
+                            <button type="submit" className={"registerbtn" + (isDataValid() ? " active" : "")}>
+                                <p>Создать аккаунт</p>
+                            </button>
                             <p>или</p>
-                            <GoogleButton />
+                            <GoogleButton/>
                         </div>
                     </form>
                 </main>
