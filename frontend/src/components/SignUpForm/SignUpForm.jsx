@@ -6,6 +6,7 @@ import { setUserData } from "@/store/userDataSlice.js";
 import { signupUser } from "@/store/authSlice.js";
 
 import Input from "@/components/Input/Input.jsx";
+import Button from "@/components/Button/Button.jsx";
 import GoogleButton from "@/components/GoogleButton/GoogleButton.jsx";
 
 import './SignUpForm.scss'
@@ -112,9 +113,11 @@ export default function SignUpForm() {
                         <p>Пароль должен содержать от 8 букв, цифр и прочих символов</p>
 
                         <div className="buttons-container">
-                            <button type="submit" className={"registerbtn" + (isDataValid() ? " active" : "")}>
-                                <p>Создать аккаунт</p>
-                            </button>
+                            <Button
+                                text="Создать аккаунт"
+                                type="submit"
+                                active={isDataValid()}
+                            />
                             <p>или</p>
                             <GoogleButton/>
                         </div>
