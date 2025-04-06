@@ -28,8 +28,7 @@ export default function SignUpForm() {
         return isUsernameLengthCorrect && isPasswordLengthCorrect && isPasswordConfirm;
     }
 
-    function switchPasswordVisibility(event) {
-        event.stopPropagation()
+    function switchPasswordVisibility() {
         setPasswordVisibility(!isPasswordVisible)
     }
 
@@ -93,7 +92,7 @@ export default function SignUpForm() {
                                 isPassword={true}
                                 isValueVisible={isPasswordVisible}
                                 onChange={(value) => setPassword(value)}
-                                onChangeVisible={() => setPasswordVisibility(!isPasswordVisible)}
+                                onChangeVisible={() => switchPasswordVisibility()}
                             />
                         </div>
                         <div className="sign-up-form-input">
@@ -106,7 +105,7 @@ export default function SignUpForm() {
                                 isPassword={true}
                                 isValueVisible={isPasswordVisible}
                                 onChange={(value) => setConfirmPassword(value)}
-                                onChangeVisible={() => setPasswordVisibility(!isPasswordVisible)}
+                                onChangeVisible={() => switchPasswordVisibility()}
                             />
                         </div>
 
