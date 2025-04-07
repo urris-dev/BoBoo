@@ -149,7 +149,7 @@ The base URL for projects endpoints is `http://127.0.0.1:8000/api/projects`.
   - Response with status code 200
   - HTTPException with status code 401 or 403 or 404
 
-### Tasks (new)
+### Tasks
 The base URL for projects endpoints is `http://127.0.0.1:8000/api/tasks`.
 
 #### Get a list of tasks for a project
@@ -188,6 +188,39 @@ The base URL for projects endpoints is `http://127.0.0.1:8000/api/tasks`.
 - **Parameters**:
   - Cookie files containing access and refresh token.
   - JSON object of TaskDelete class.
+- **Response:**
+  - Response with status code 200
+  - HTTPException with status code 401 or 403 or 404
+
+### Subtasks
+The base URL for projects endpoints is `http://127.0.0.1:8000/api/subtasks`.
+
+#### Create subtask
+- **Method**: POST
+- **URL** `/create-subtask/`
+- **Parameters**:
+  - Cookie files containing access and refresh token.
+  - JSON object of SubtaskCreate class.
+- **Response:** 
+  - `subtask_id: integer` or
+  - HTTPException with status code 401 or 403 or 404
+
+#### Edit subtask
+- **Method**: PUT
+- **URL** `/edit-subtask/`
+- **Parameters**:
+  - Cookie files containing access and refresh token.
+  - JSON object of SubtaskEdit class.
+- **Response:**
+  - Response with status code 200
+  - HTTPException with status code 401 or 403 or 404
+
+#### Delete subtask
+- **Method**: DELETE
+- **URL** `/delete-subtask/`
+- **Parameters**:
+  - Cookie files containing access and refresh token.
+  - JSON object of SubtaskDelete class.
 - **Response:**
   - Response with status code 200
   - HTTPException with status code 401 or 403 or 404
@@ -233,21 +266,22 @@ A type of standardized Internet error.
 - `id: integer` Unique project identifier.
 - `title: string` Project name field with max length in 50 characters.
 
-### Task (new)
+### Task
 - `id: integer` 
 - `title: string` 
 - `description: string` 
 - `priority: string` 
 - `status: string`
+- `subtasks: List[Subtask]` **(new)**
 
-### TaskCreate (new)
+### TaskCreate
 - `title: string` Task name field with max length in 50 characters.
 - `description: string` Task description field without max length. **(Optional)**
 - `priority: string` Task priority field. Can be (High | Middle | Low).
 - `status: string` Task status field. Can be (Todo | In progress | Done).
 - `project_id: integer` Project identifier that the task belongs to.
   
-### TaskEdit (new)
+### TaskEdit
 - `id: integer` Unique task identifier.
 - `title: string` Task name field with max length in 50 characters.
 - `description: string` Task description field without max length. **(Optional)**
@@ -255,9 +289,35 @@ A type of standardized Internet error.
 - `status: string` Task status field. Can be (Todo | In progress | Done).
 - `project_id: integer` Project identifier that the task belongs to.
 
-### TaskDelete (new)
+### TaskDelete
 - `task_id: integer` Unique task identifier.
 - `project_id: integer` Project identifier that the task belongs to.
+
+### Subtask (new)
+- `id: integer`
+- `title: string`
+- `description: string`
+- `completion: boolean`
+
+### SubtaskCreate (new)
+- `title: string` Subtask name field with max length in 50 characters.
+- `description: string` Subtask description field without max length. **(Optional)**
+- `completion: boolean` Subtask completion status field.
+- `project_id: integer` Project identifier that the subtask belongs to.
+- `task_id: integer` Task identifier that the subtask belongs to.
+
+### SubtaskEdit (new)
+- `id: integer` Unique subtask identifier.
+- `title: string` Subtask name field with max length in 50 characters.
+- `description: string` Subtask description field without max length. **(Optional)**
+- `completion: boolean` Subtask completion status field.
+- `project_id: integer` Project identifier that the subtask belongs to.
+- `task_id: integer` Task identifier that the subtask belongs to.
+  
+### SubtaskDelete (new)
+- `id: integer` Unique subtask identifier.
+- `task_id: integer` Task identifier that the subtask belongs to.
+- `project_id: integer` Project identifier that the subtask belongs to.
 
 ## Conclusion
 This concludes the documentation for the Boboo API. 

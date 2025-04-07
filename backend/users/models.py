@@ -21,7 +21,7 @@ class User(ormar.Model):
     username: str = ormar.String(nullable=False, max_length=50)
     email: str = ormar.String(index=True, unique=True, nullable=False, max_length=255)
     password: Optional[str] = ormar.String(nullable=True, max_length=60)
-    photo: Optional[str] = ormar.String(nullable=True, max_length=500)
+    photo: Optional[str] = ormar.String(nullable=True, max_length=500, server_default="")
     friends: Optional[List["User"]] = ormar.ManyToMany(UserRef, through=Friendship)
 
 User.update_forward_refs()

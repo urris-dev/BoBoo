@@ -22,9 +22,9 @@ async def create_task(task: schemas.TaskCreate, Authorize: AuthJWT = Depends()):
     return await services.create_task(task, Authorize)
 
 @task_router.put("/edit-task/", responses={403: {}, 404: {}})
-async def edit_project(task: schemas.TaskEdit, Authorize: AuthJWT = Depends()):
+async def edit_task(task: schemas.TaskEdit, Authorize: AuthJWT = Depends()):
     return await services.edit_task(task, Authorize)
 
 @task_router.delete("/delete-task/", responses={403: {}, 404: {}})
-async def delete_project(task: schemas.TaskDelete, Authorize: AuthJWT = Depends()):
+async def delete_task(task: schemas.TaskDelete, Authorize: AuthJWT = Depends()):
     return await services.delete_task(task, Authorize)

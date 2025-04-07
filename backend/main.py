@@ -8,11 +8,13 @@ from typing import AsyncIterator
 
 from config import settings
 from projects.api import project_router
+from subtasks.api import subtask_router
 from tasks.api import task_router
 from users.api import user_router
 from users.services import delete_outdated_not_confirmed_users, delete_outdated_reset_password_users
 
 from projects.models import Project
+from subtasks.models import Subtask
 from tasks.models import Task
 from users.models import User
 
@@ -51,3 +53,4 @@ def home():
 app.include_router(user_router)
 app.include_router(project_router)
 app.include_router(task_router)
+app.include_router(subtask_router)
