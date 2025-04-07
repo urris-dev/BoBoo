@@ -6,10 +6,10 @@ export const signupUser = createAsyncThunk(
     'auth/signupUser',
     async function ({password}) {
         const state = store.getState();
-        const authData = state.auth;
+        const apiData = state.api;
         const userData = state.userData;
 
-        return fetch(new URL('send-email-confirmation-code', authData.baseApiURL).href, {
+        return fetch(new URL('send-email-confirmation-code', apiData.authApiURL).href, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -27,10 +27,10 @@ export const confirmEmail = createAsyncThunk(
     'auth/confirmEmail',
     async function ({code}) {
         const state = store.getState();
-        const authData = state.auth;
+        const apiData = state.api;
         const userData = state.userData;
 
-        await fetch(new URL('confirm-email', authData.baseUrl).href, {
+        await fetch(new URL('confirm-email', apiData.authApiURL).href, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -47,10 +47,10 @@ export const googleLogin = createAsyncThunk(
     'auth/googleLogin',
     async function () {
         const state = store.getState();
-        const authData = state.auth;
+        const apiData = state.api;
         const userData = state.userData;
 
-        await fetch(new URL('google-login', authData.baseApiURL).href, {
+        await fetch(new URL('google-login', apiData.authApiURL).href, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -69,15 +69,8 @@ const authSlice = createSlice({
     initialState: {
         status: null,
         error: null,
-        baseApiURL: new URL('api/users/', 'https://ranks-catalogue-actually-arrive.trycloudflare.com/').href,
     },
-    reducers: {
-
-    },
-    // extraReducers: {
-    //
-    // }
+    reducers: {},
 });
 
 export default authSlice.reducer;
-export const selectBaseURL = (state) => state.auth.baseApiURL;

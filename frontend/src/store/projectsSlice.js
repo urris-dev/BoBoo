@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
+import store from "@/store/store.js";
+
 const initialState = {
     status: 'idle',
     projectsList: [],
@@ -31,12 +33,29 @@ export const fetchProjectsTasks = createAsyncThunk(
     }
 )
 
+export const createProject = createAsyncThunk(
+    'projects/createProject',
+    async ({ projectName }) => {
+        const state = store.getState();
+        const apiData = state.api;
+
+        return fetch(new URL('create-project', apiData.projectsApiURL).href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: projectName,
+            }),
+            credentials: "same-origin",
+        });
+    },
+);
+
 const projectSlice = createSlice({
     name: 'projects',
     initialState,
-    reducers: {
-
-    },
+    reducers: {},
     extraReducers: builder => {
         builder
             .addCase(fetchProjectsList.fulfilled, (state, action) => {
