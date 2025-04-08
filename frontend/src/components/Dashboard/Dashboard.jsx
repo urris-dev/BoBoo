@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom"
 
-import Task from '@/components/Task/Task.jsx'
+import Stage from "@/components/Stage/Stage.jsx";
 
 import './Dashboard.scss'
 
@@ -10,47 +10,24 @@ export default function Dashboard({tasksArray}) {
     const { id } = useParams()
     const tasks = tasksArray.find(obj => obj.id === id).tasks;
 
-    console.log(tasks)
-
     const toDoTasks = tasks.filter(task => task.stage === "to do")
     const inProgressTasks = tasks.filter(task => task.stage === "in progress")
     const doneTasks = tasks.filter(task => task.stage === "done")
 
     return (
         <div className="dashboard-container">
-            <div className="stage">
-                <p className="stage-title">To do ({toDoTasks.length})</p>
-                <div className="tasks-list">
-                    {toDoTasks.map(task =>
-                        <Task
-                            key={task.id}
-                            task={task}
-                        />
-                    )}
-                </div>
-            </div>
-            <div className="stage">
-                <p className="stage-title">In progress ({inProgressTasks.length})</p>
-                <div className="tasks-list">
-                    {inProgressTasks.map(task =>
-                        <Task
-                            key={task.id}
-                            task={task}
-                        />
-                    )}
-                </div>
-            </div>
-            <div className="stage">
-                <p className="stage-title">Done ({doneTasks.length})</p>
-                <div className="tasks-list">
-                    {doneTasks.map(task =>
-                        <Task
-                            key={task.id}
-                            task={task}
-                        />
-                    )}
-                </div>
-            </div>
+            <Stage
+                title="To do"
+                tasks={toDoTasks}
+            />
+            <Stage
+                title="In progress"
+                tasks={inProgressTasks}
+            />
+            <Stage
+                title="Done"
+                tasks={doneTasks}
+            />
         </div>
-    )
+    );
 }

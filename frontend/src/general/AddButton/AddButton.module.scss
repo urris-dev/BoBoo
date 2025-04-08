@@ -1,0 +1,9 @@
+.button {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  cursor: pointer;
+  background-color: rgba(28, 29, 34, 0.08);
+
+  display: grid;
+  place-items: center;
+}

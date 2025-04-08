@@ -1,9 +1,9 @@
-import plus from "@/../public/plus.svg"
-
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { selectProjectsList } from "@/store/projectsSlice.js";
+
+import AddButton from "@/general/AddButton/AddButton.jsx";
 
 import './ProjectsSidebar.scss'
 
@@ -15,7 +15,7 @@ export default function ProjectsSidebar({ createProject }) {
             <div className="projects-sidebar-container">
                 <div className="projects-sidebar-header">
                     <Link to="/"><h1>Projects</h1></Link>
-                    <button onClick={createProject}><img className="plus" src={plus} alt=""/></button>
+                    <AddButton onClick={createProject} />
                 </div>
                 <div className="projects-sidebar-menu">
                     <p>Projects</p>

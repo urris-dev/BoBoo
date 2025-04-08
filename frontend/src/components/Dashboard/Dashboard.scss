@@ -3,21 +3,4 @@
   margin-bottom: 32px;
   display: flex;
   gap: 22px;
-
-  .stage {
-    width: 100%;
-    padding: 16px;
-    border-radius: 12px;
-    border: 2px rgba(28, 29, 34, 0.08) dashed;
-
-    .stage-title {
-      font-size: 14px;
-      color: rgba(28, 29, 34, 0.5);
-      font-weight: 600;
-    }
-
-    .tasks-list {
-      margin-top: 16px;
-    }
-  }
 }

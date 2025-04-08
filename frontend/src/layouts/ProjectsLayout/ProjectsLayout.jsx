@@ -21,9 +21,9 @@ export default function ProjectsLayout() {
                 <div className="header">
                     <ProjectsHeader projectName={"Типа имя"}/>
                 </div>
-                <div className="dashboard">
+                <section className="dashboard">
                     <Outlet/>
-                </div>
+                </section>
             </div>
         </>
     );

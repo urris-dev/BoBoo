@@ -1,0 +1,30 @@
+.stage {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px rgba(28, 29, 34, 0.08) dashed;
+
+  p {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .stageHeader {
+    display: flex;
+    justify-content: space-between;
+
+    .stageTitle {
+      color: rgba(28, 29, 34, 0.5);
+    }
+
+    .addNewTask {
+      display: flex;
+      gap: 3px;
+      cursor: pointer;
+    }
+  }
+
+  .tasksList {
+    margin-top: 16px;
+  }
+}
