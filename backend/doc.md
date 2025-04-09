@@ -106,6 +106,31 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
   - Response with status code 200 or
   - HTTPException with status code 400 or 401
 
+#### Get user information (new)
+- **Method:** GET
+- **URL:** `/user-about/`
+- **Parameters:**
+	- Cookie files containing access and refresh token.
+- **Response:**
+  - JSON object of User class or
+  - HTTPException with status code 401
+
+#### Get user photo (new)
+- **Method:** GET
+- **URL:** `photo` field of User class
+- **Response:**
+  - Binary data of the user's photo.
+
+#### Delete user account (new)
+- **Method:** DELETE
+- **URL:** `/delete-account/`
+- **Parameters:**
+  - Cookie files containing access and refresh tokens.
+- **Response:**  
+  - Response with status code 200
+  - Deletes access and refresh tokens from Cookie files or
+  - HTTPException with status code 401
+
 ### Projects 
 The base URL for projects endpoints is `http://127.0.0.1:8000/api/projects`.
 
@@ -160,7 +185,7 @@ The base URL for projects endpoints is `http://127.0.0.1:8000/api/tasks`.
   - `project_id: integer` Unique project identifier.
 - **Response:** 
   - List of JSON objects of Task class or
-  - HTTPException with status code 401 or 403
+  - HTTPException with status code 401 or 403 or 404
 
 #### Create task
 - **Method**: POST
@@ -240,6 +265,11 @@ A type of standardized Internet error.
 - `email: string` Email field with maximum lingth in 255 characters. 
 - `photo: string` URL for getting a Google user's photo.
 
+### User (new)
+- `username: string`
+- `email: string`
+- `photo: string`
+
 ### UserRegister
 - `username: string` Username field with length from 1 to 50 characters.
 - `email: string` Email field with maximum lingth in 255 characters.
@@ -271,13 +301,15 @@ A type of standardized Internet error.
 - `title: string` 
 - `description: string` 
 - `priority: string` 
+- `deadline: date` **(new)**
 - `status: string`
-- `subtasks: List[Subtask]` **(new)**
+- `subtasks: List[Subtask]`
 
 ### TaskCreate
 - `title: string` Task name field with max length in 50 characters.
 - `description: string` Task description field without max length. **(Optional)**
 - `priority: string` Task priority field. Can be (High | Middle | Low).
+- `deadline: date` Task deadline field. Should be later than today and in the YYYY-MM-dd format. **(new)**
 - `status: string` Task status field. Can be (Todo | In progress | Done).
 - `project_id: integer` Project identifier that the task belongs to.
   
@@ -286,6 +318,7 @@ A type of standardized Internet error.
 - `title: string` Task name field with max length in 50 characters.
 - `description: string` Task description field without max length. **(Optional)**
 - `priority: string` Task priority field. Can be (High | Middle | Low).
+- `deadline: date` Task deadline field. Should be later than today and in the YYYY-MM-dd format. **(new)**
 - `status: string` Task status field. Can be (Todo | In progress | Done).
 - `project_id: integer` Project identifier that the task belongs to.
 
@@ -293,20 +326,20 @@ A type of standardized Internet error.
 - `task_id: integer` Unique task identifier.
 - `project_id: integer` Project identifier that the task belongs to.
 
-### Subtask (new)
+### Subtask
 - `id: integer`
 - `title: string`
 - `description: string`
 - `completion: boolean`
 
-### SubtaskCreate (new)
+### SubtaskCreate
 - `title: string` Subtask name field with max length in 50 characters.
 - `description: string` Subtask description field without max length. **(Optional)**
 - `completion: boolean` Subtask completion status field.
 - `project_id: integer` Project identifier that the subtask belongs to.
 - `task_id: integer` Task identifier that the subtask belongs to.
 
-### SubtaskEdit (new)
+### SubtaskEdit
 - `id: integer` Unique subtask identifier.
 - `title: string` Subtask name field with max length in 50 characters.
 - `description: string` Subtask description field without max length. **(Optional)**
@@ -314,7 +347,7 @@ A type of standardized Internet error.
 - `project_id: integer` Project identifier that the subtask belongs to.
 - `task_id: integer` Task identifier that the subtask belongs to.
   
-### SubtaskDelete (new)
+### SubtaskDelete
 - `id: integer` Unique subtask identifier.
 - `task_id: integer` Task identifier that the subtask belongs to.
 - `project_id: integer` Project identifier that the subtask belongs to.

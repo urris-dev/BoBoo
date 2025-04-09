@@ -11,6 +11,12 @@ class GoogleUser(BaseModel):
     photo: str
 
 
+class User(BaseModel):
+    username: str
+    email: str
+    photo: str
+
+
 class UserRegister(BaseModel):
     username: Annotated[str, Field(min_length=1, max_length=50)]
     email: Annotated[EmailStr, Field(max_length=255)]

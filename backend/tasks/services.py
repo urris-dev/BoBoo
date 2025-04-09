@@ -21,7 +21,11 @@ async def check_task_access(task: models.Task, project_id: int) -> Union[None, H
     
 
 async def get_tasks(project_id: int, Authorize: AuthJWT) -> List[schemas.Task]:
-    project = await Project.objects.select_related("tasks__subtasks").get(id=project_id)
+    try:
+        project = await Project.objects.select_related("tasks__subtasks").get(id=project_id)
+    except:
+        raise HTTPException(status_code=404, detail="Проект с переданным идентификатором не найден.")
+    
     await check_project_access(project, Authorize)
     return project.tasks
 
@@ -43,8 +47,9 @@ async def edit_task(task: schemas.TaskEdit, Authorize: AuthJWT) -> Union[HTTPExc
     _task.title = task.title
     _task.description = task.description
     _task.priority = task.priority
+    _task.deadline = task.deadline
     _task.status = task.status
-    await _task.update(["title", "description", "priority", "status"])
+    await _task.update(["title", "description", "priority", "deadline", "status"])
 
     return Response(status_code=200)
 

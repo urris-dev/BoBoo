@@ -43,7 +43,7 @@ async def refresh(Authorize: oauth2.AuthJWT = Depends()):
     return await services.recreate_tokens(Authorize)
 
 
-@user_router.get("/about-me", dependencies=[Depends(check_access_token)], responses={401: {}})
+@user_router.get("/user-about/", dependencies=[Depends(check_access_token)], responses={401: {}}, response_model=schemas.User)
 async def user_about(Authorize: oauth2.AuthJWT = Depends()):
     return await services.get_user_data(Authorize)
 
@@ -61,3 +61,8 @@ async def reset_password(user: schemas.UserResetPassword):
 @user_router.patch("/change-password", dependencies=[Depends(check_access_token)], responses={400: {}, 401: {}})
 async def change_password(user: schemas.UserChangePassword, Authorize: oauth2.AuthJWT = Depends()):
     return await services.change_password(user, Authorize)
+
+
+@user_router.delete("/delete-account/", dependencies=[Depends(check_access_token)], responses={401: {}})
+async def delete_account(Authorize: oauth2.AuthJWT = Depends()):
+    return await services.delete_account(Authorize)

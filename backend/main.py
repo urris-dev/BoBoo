@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from database import base_ormar_config
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from typing import AsyncIterator
 
@@ -54,3 +55,5 @@ app.include_router(user_router)
 app.include_router(project_router)
 app.include_router(task_router)
 app.include_router(subtask_router)
+
+app.mount("/media", StaticFiles(directory="media"), name="media")

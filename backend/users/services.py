@@ -4,6 +4,7 @@ from fastapi.responses import Response
 from fastapi.exceptions import HTTPException
 from os import mkdir, path
 from typing import Union
+from shutil import rmtree
 
 import oauth2
 from config import settings
@@ -31,7 +32,7 @@ async def save_user_photo(url: str, username: str) -> str:
             with open(file_path, "wb") as file:
                 file.write(await response.read())
     
-    return file_path
+    return f"/media/{username}/photo.png"
 
 
 async def login_with_google(user: schemas.GoogleUser, Authorize: oauth2.AuthJWT) -> Response:
@@ -124,9 +125,11 @@ async def recreate_tokens(Authorize: oauth2.AuthJWT) -> Response:
     return response
 
 
-async def get_user_data(Authorize: oauth2.AuthJWT) -> dict[str, str]:
+async def get_user_data(Authorize: oauth2.AuthJWT) -> schemas.User:
     user_email = Authorize.get_jwt_subject()
-    return {"your_email": user_email}
+    user = await models.User.objects.get(email=user_email)
+
+    return schemas.User(username=user.username, email=user.email, photo=f"{settings.SERVER_ORIGIN}{user.photo}")
 
 
 async def change_user_account_password(email: str, new_password: str):
@@ -183,4 +186,15 @@ async def change_password(user: schemas.UserChangePassword, Authorize: oauth2.Au
     response = Response(status_code=200) 
     Authorize.unset_jwt_cookies(response)
     return response
+
+
+async def delete_account(Authorize: oauth2.AuthJWT) -> Response:
+    email = Authorize.get_jwt_subject()
+    _user = await models.User.objects.get(email=email)
+
+    rmtree(path.join(_BASE_DIR, "media", _user.username))
+    await _user.delete()
+    response = Response(status_code=200)
+    Authorize.unset_jwt_cookies(response)
     
+    return response

@@ -13,7 +13,7 @@ task_router = APIRouter(
     responses={401: {}}
 )
 
-@task_router.get("/get-tasks-list/", response_model=List[schemas.Task], responses={403: {}})
+@task_router.get("/get-tasks-list/", response_model=List[schemas.Task], responses={403: {}, 404: {}})
 async def get_tasks_list(project_id: int, Authorize: AuthJWT = Depends()):
     return await services.get_tasks(project_id, Authorize)
 
