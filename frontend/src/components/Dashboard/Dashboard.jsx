@@ -18,14 +18,17 @@ export default function Dashboard({tasksArray}) {
         <div className="dashboard-container">
             <Stage
                 title="To do"
+                stage="Todo"
                 tasks={toDoTasks}
             />
             <Stage
                 title="In progress"
+                stage="In progress"
                 tasks={inProgressTasks}
             />
             <Stage
                 title="Done"
+                stage="Done"
                 tasks={doneTasks}
             />
         </div>

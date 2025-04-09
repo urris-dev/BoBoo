@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { createProject } from "@/store/projectsSlice.js";
 
 import ModalForm from "@/general/ModalForm/ModalForm.jsx";
-import Input from "@/general/Input/Input.jsx";
+import Input from "@/general/formElements/Input/Input.jsx";
 import Button from "@/general/Button/Button.jsx";
 
 import styles from "./CreateProjectModal.module.scss";
@@ -32,18 +32,15 @@ export default function CreateProjectModal({ ref }) {
         <ModalForm
             ref={ref}
             title="Создать проект"
-            closePopup={() => ref.current.close()}
         >
             <form className={styles.form} onSubmit={submitCreateProjectForm}>
-                <div className={styles.createProjectInput}>
-                    <Input
-                        label="Название проекта"
-                        name="projectName"
-                        required={true}
-                        value={projectName}
-                        onChange={value => setProjectName(value)}
-                    />
-                </div>
+                <Input
+                    label="Название проекта"
+                    name="projectName"
+                    required={true}
+                    value={projectName}
+                    onChange={value => setProjectName(value)}
+                />
                 <div className={styles.button}>
                     <Button
                         text={"Создать проект"}

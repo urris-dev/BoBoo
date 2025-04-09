@@ -52,6 +52,30 @@ export const createProject = createAsyncThunk(
     },
 );
 
+export const addNewTask = createAsyncThunk(
+    'projects/addNewTask',
+    async ({ title, description, priority, status, deadline, id }) => {
+        const state = store.getState();
+        const apiData = state.api;
+
+        return fetch(new URL('create-task', apiData.tasksApiURL).href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                description: description,
+                priority: priority,
+                deadline: deadline,
+                status: status,
+                project_id: id,
+            }),
+            credentials: "same-origin",
+        });
+    },
+);
+
 const projectSlice = createSlice({
     name: 'projects',
     initialState,

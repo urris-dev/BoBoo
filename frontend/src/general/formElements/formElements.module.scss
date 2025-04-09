@@ -1,4 +1,4 @@
-.inputContainer {
+.container {
   display: flex;
   flex-direction: column;
 
@@ -8,10 +8,8 @@
     color: rgba(28, 29, 34, 0.5);
   }
 
-  .input {
+  .formElement {
     background-color: white;
-    height: 42px;
-    padding: 12px;
     border-radius: 12px;
     border: 1px solid rgba(28, 29, 34, 0.2);
 
@@ -20,17 +18,8 @@
     color: rgba(28, 29, 34, 0.8);
     font-family: 'Exo 2', sans-serif;
   }
-}
 
-.passwordInputContainer {
-  position: relative;
-
-  .passwordIcon {
-    cursor: pointer;
-    height: 24px;
-    position: absolute;
-    right: 12px;
-    bottom: 9px;
-    opacity: 0.5;
+  .textField {
+    padding: 11px 12px 13px;
   }
 }

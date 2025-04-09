@@ -7,6 +7,7 @@ const apiSlice = createSlice({
     initialState: {
         authApiURL: new URL('api/users/', baseApiURL).href,
         projectsApiURL: new URL('api/projects/', baseApiURL).href,
+        tasksApiURL: new URL('api/tasks/', baseApiURL).href,
     },
     reducers: {},
 });

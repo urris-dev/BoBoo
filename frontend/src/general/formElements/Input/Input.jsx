@@ -1,9 +1,10 @@
-import hide from "../../../public/hide.png";
-import show from "../../../public/show.png";
+import hide from "../../../../public/hide.png";
+import show from "../../../../public/show.png";
 
 import { useState } from "react";
 
-import styles from './Input.module.scss';
+import inputStyles from './Input.module.scss';
+import formElementsStyles from "../formElements.module.scss";
 
 export default function Input({
     label, type = "text", name, required = false, value = '',
@@ -13,10 +14,14 @@ export default function Input({
     const [inputValue, setInputValue] = useState(value);
 
     return (
-        <div className={`${styles.inputContainer} ${isPassword ? styles.passwordInputContainer : ''}`}>
-            <label className={styles.label} htmlFor={name}>{label}</label>
+        <div className={`${formElementsStyles.container} ${isPassword ? inputStyles.passwordInputContainer : ''}`}>
+            <label className={formElementsStyles.label} htmlFor={name}>{label}</label>
             <input
-                className={styles.input}
+                className={`
+                    ${formElementsStyles.formElement}
+                    ${formElementsStyles.textField}
+                    ${inputStyles.input}
+                `}
                 type={isValueVisible && isPassword ? "text" : type} name={name} required={required}
                 value={inputValue} onChange={(event) => {
                     setInputValue(event.target.value);
@@ -25,7 +30,7 @@ export default function Input({
             />
             {isPassword && (
                 <img
-                    className={styles.passwordIcon} onClick={(event) => {
+                    className={inputStyles.passwordIcon} onClick={(event) => {
                         event.stopPropagation();
                         onChangeVisible();
                     }}
