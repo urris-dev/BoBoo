@@ -6,9 +6,7 @@ from config import settings
 
 
 class GoogleUser(BaseModel):
-    username: Annotated[str, Field(min_length=1, max_length=50)]
-    email: Annotated[EmailStr, Field(max_length=255)]
-    photo: str
+    token: str
 
 
 class User(BaseModel):

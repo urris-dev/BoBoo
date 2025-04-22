@@ -2,6 +2,8 @@ from aiohttp import ClientSession
 from datetime import date
 from fastapi.responses import Response
 from fastapi.exceptions import HTTPException
+from google.auth.transport import requests
+from google.oauth2 import id_token
 from os import mkdir, path
 from typing import Union
 from shutil import rmtree
@@ -35,16 +37,23 @@ async def save_user_photo(url: str, username: str) -> str:
     return f"/media/{username}/photo.png"
 
 
-async def login_with_google(user: schemas.GoogleUser, Authorize: oauth2.AuthJWT) -> Response:
+async def login_with_google(user: schemas.GoogleUser, Authorize: oauth2.AuthJWT) -> Union[HTTPException, Response]:
     try:
-        await models.User.objects.get(email=user.email)
+        user_data = id_token.verify_oauth2_token(user.token, requests.Request(), settings.GOOGLE_CLIENT_ID)
+    except:    
+        return HTTPException(status_code=401, detail="Неверный токен аутентификации пользователя")
+    
+    email = user_data.get("email")
+    try:
+        await models.User.objects.get(email=email)
     except:
-        photo_path = await save_user_photo(user.photo, user.username)
-        user.photo = photo_path
-        await models.User.objects.create(**user.model_dump())
+        username = user_data.get("name")
+        photo = user_data.get("picture")
+        photo_path = await save_user_photo(photo, username)
+        await models.User.objects.create(**{"username": username, "email": email, "photo": photo_path})
 
-    access_token = Authorize.create_access_token(subject=user.email)
-    refresh_token = Authorize.create_refresh_token(subject=user.email)
+    access_token = Authorize.create_access_token(subject=email)
+    refresh_token = Authorize.create_refresh_token(subject=email)
     response = Response(status_code=200)
     Authorize.set_access_cookies(access_token, response, max_age=JWT_ACCESS_TOKEN_EXPIRES_IN)
     Authorize.set_refresh_cookies(refresh_token, response, max_age=JWT_REFRESH_TOKEN_EXPIRES_IN)

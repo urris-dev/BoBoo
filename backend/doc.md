@@ -27,7 +27,8 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
 - **Parameters:** JSON object of GoogleUser class.
 - **Response:** 
   - Response with status code 200 
-  - Adds access and refresh tokens to Cookie files
+  - Adds access and refresh tokens to Cookie files or
+  - HTTPException with status code 401
 
 #### Register not confirmed user
 - **Method:** POST
@@ -87,7 +88,7 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
   - HTTPException with status code 404
 
 #### Reset user account password (2)
-- **Method:** PATCH **(new)**
+- **Method:** PATCH 
 - **URL:** `/reset-password/`
 - **Description:** Resets user account password.
 - **Parameters:** JSON object of UserResetPassword class.
@@ -96,7 +97,7 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
   - HTTPException with status code 400 or 404
 
 #### Change user account password
-- **Method:** PATCH **(new)**
+- **Method:** PATCH 
 - **URL:** `/change-password/`
 - **Description:** Changes user account password, logs out of user account.
 - **Parameters:**
@@ -106,7 +107,7 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
   - Response with status code 200 or
   - HTTPException with status code 400 or 401
 
-#### Get user information (new)
+#### Get user information
 - **Method:** GET
 - **URL:** `/user-about/`
 - **Parameters:**
@@ -115,13 +116,13 @@ The base URL for user authentication endpoints is `http://127.0.0.1:8000/api/use
   - JSON object of User class or
   - HTTPException with status code 401
 
-#### Get user photo (new)
+#### Get user photo
 - **Method:** GET
 - **URL:** `photo` field of User class
 - **Response:**
   - Binary data of the user's photo.
 
-#### Delete user account (new)
+#### Delete user account
 - **Method:** DELETE
 - **URL:** `/delete-account/`
 - **Parameters:**
@@ -261,11 +262,9 @@ A type of standardized Internet error.
 - `refresh_token: string` Refresh token with an expiration time of 60 minutes.
   
 ### GoogleUser
-- `username: string` Username field with length from 1 to 50 characters.
-- `email: string` Email field with maximum lingth in 255 characters. 
-- `photo: string` URL for getting a Google user's photo.
+- `token: string` The user's ID token obtained from the Google OAuth response.
 
-### User (new)
+### User
 - `username: string`
 - `email: string`
 - `photo: string`
@@ -301,7 +300,7 @@ A type of standardized Internet error.
 - `title: string` 
 - `description: string` 
 - `priority: string` 
-- `deadline: date` **(new)**
+- `deadline: date` 
 - `status: string`
 - `subtasks: List[Subtask]`
 
@@ -309,7 +308,7 @@ A type of standardized Internet error.
 - `title: string` Task name field with max length in 50 characters.
 - `description: string` Task description field without max length. **(Optional)**
 - `priority: string` Task priority field. Can be (High | Middle | Low).
-- `deadline: date` Task deadline field. Should be later than today and in the YYYY-MM-dd format. **(new)**
+- `deadline: date` Task deadline field. Should be later than today and in the YYYY-MM-dd format. 
 - `status: string` Task status field. Can be (Todo | In progress | Done).
 - `project_id: integer` Project identifier that the task belongs to.
   
@@ -318,7 +317,7 @@ A type of standardized Internet error.
 - `title: string` Task name field with max length in 50 characters.
 - `description: string` Task description field without max length. **(Optional)**
 - `priority: string` Task priority field. Can be (High | Middle | Low).
-- `deadline: date` Task deadline field. Should be later than today and in the YYYY-MM-dd format. **(new)**
+- `deadline: date` Task deadline field. Should be later than today and in the YYYY-MM-dd format. 
 - `status: string` Task status field. Can be (Todo | In progress | Done).
 - `project_id: integer` Project identifier that the task belongs to.
 

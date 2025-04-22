@@ -11,7 +11,7 @@ user_router = APIRouter(
     )
 
 
-@user_router.post('/google-login')
+@user_router.post('/google-login', responses={401: {}})
 async def google_login(user: schemas.GoogleUser, Authorize: oauth2.AuthJWT = Depends()):
     return await services.login_with_google(user, Authorize)
 
