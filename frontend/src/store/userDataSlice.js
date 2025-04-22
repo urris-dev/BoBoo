@@ -3,23 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 const userDataSlice = createSlice({
     name: 'userData',
     initialState: {
-        username: '',
-        email: '',
-        photo: '',
+        token: ''
     },
     reducers: {
         setUserData(state, action) {
-            state.username = action.payload.username;
-            state.email = action.payload.email;
-        },
-        setUserPhoto(state, action) {
-            state.photo = action.payload.photo;
+            state.token = action.payload.token;
         },
     }
 });
 
 export default userDataSlice.reducer;
-export const { setUserData, setUserPhoto } = userDataSlice.actions;
-
-export const selectUsername = (state) => state.userData.username;
-export const selectEmail = (state) => state.userData.email;
+export const { setUserData } = userDataSlice.actions;

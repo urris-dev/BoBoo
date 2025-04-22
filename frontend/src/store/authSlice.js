@@ -52,13 +52,12 @@ export const googleLogin = createAsyncThunk(
 
         await fetch(new URL('google-login', apiData.authApiURL).href, {
             method: 'POST',
+            credentials: "include",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: userData.username,
-                email: userData.email,
-                photo: userData.photo,
+                token: userData.token
             }),
         });
     },
