@@ -1,0 +1,16 @@
+.input {
+  height: 42px;
+}
+
+.passwordInputContainer {
+  position: relative;
+
+  .passwordIcon {
+    cursor: pointer;
+    height: 24px;
+    position: absolute;
+    right: 12px;
+    bottom: 9px;
+    opacity: 0.5;
+  }
+}

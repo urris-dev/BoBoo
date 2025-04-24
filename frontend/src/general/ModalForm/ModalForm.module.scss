@@ -1,0 +1,30 @@
+.popup {
+  width: 700px;
+  margin: auto;
+  border-radius: 24px;
+  border: 2px rgba(28, 29, 34, 0.08) solid;
+  padding: 24px;
+  background-color: #fff;
+
+  .popupContent {
+    min-height: 348px;
+    display: flex;
+    flex-direction: column;
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      height: 38px;
+
+      .title {
+        font-size: 32px;
+      }
+    }
+
+    .main {
+      margin-top: 24px;
+      flex-grow: 1;
+      display: flex;
+    }
+  }
+}

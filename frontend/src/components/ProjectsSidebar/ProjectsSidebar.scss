@@ -1,0 +1,44 @@
+.projects-sidebar-container {
+  padding: 28px;
+
+  .projects-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    a {
+      text-decoration: none;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #213547;
+    }
+
+    //button {
+    //  width: 28px;
+    //  height: 28px;
+    //  border-radius: 50%;
+    //  cursor: pointer;
+    //  background-color: rgba(28, 29, 34, 0.08);
+    //
+    //  .plus {
+    //    margin-top: 3px;
+    //  }
+    //}
+  }
+
+  .projects-sidebar-menu {
+    margin-top: 32px;
+
+    p {
+      font-weight: bold;
+    }
+
+    nav {
+      margin-left: 28px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
