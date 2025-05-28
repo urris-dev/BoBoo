@@ -12,11 +12,11 @@ function App() {
                 <Routes>
                     <Route
                         path={'/*'}
-                        element={<Projects />}
+                        element={<SignUp />}
                     />
                     <Route
-                        path={'/signup/*'}
-                        element={<SignUp />}
+                        path={'/workspace/*'}
+                        element={<Projects />}
                     />
                 </Routes>
             </BrowserRouter>

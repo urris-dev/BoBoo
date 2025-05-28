@@ -1,5 +1,5 @@
 import './Task.scss'
-import icon from "../../../src/icons/progress-icon.svg"
+import icon from "../../../src/assets/progress-icon.svg"
 
 export default function Task({task}) {
     const completedSubtaskCount = task.subtasks.filter(subtask => subtask.completionStatus === true).length;

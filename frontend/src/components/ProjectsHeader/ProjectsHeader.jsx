@@ -1,5 +1,5 @@
-import search from '@/../src/icons/search.svg'
-import notifications from '@/../src/icons/notifications.svg'
+import search from '@/../src/assets/search.svg'
+import notifications from '@/../src/assets/notifications.svg'
 
 import './ProjectsHeader.scss'
 

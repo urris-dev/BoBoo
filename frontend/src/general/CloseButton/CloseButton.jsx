@@ -1,4 +1,4 @@
-import cross from "@/../src/icons/cross.png";
+import cross from "@/../src/assets/cross.png";
 
 import styles from "./CloseButton.module.scss";
 

@@ -1,5 +1,5 @@
-import hide from "../../../../src/icons/hide.png";
-import show from "../../../../src/icons/show.png";
+import hide from "../../../../src/assets/hide.png";
+import show from "../../../../src/assets/show.png";
 
 import { useState } from "react";
 

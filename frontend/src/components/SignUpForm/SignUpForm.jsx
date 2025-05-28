@@ -9,6 +9,8 @@ import Input from "@/general/formElements/Input/Input.jsx";
 import Button from "@/general/Button/Button.jsx";
 import GoogleButton from "@/components/GoogleButton/GoogleButton.jsx";
 
+import signUpIllustration from "@/assets/signup-illustration.svg"
+
 import './SignUpForm.scss'
 
 export default function SignUpForm() {
@@ -41,7 +43,7 @@ export default function SignUpForm() {
                 dispatch(setUserData({username, email}));
                 const resp = await dispatch(signupUser({password}));
                 if (!resp.ok) {
-                    throw new SyntaxError("сервер не доступенз");
+                    throw new SyntaxError("сервер не доступен");
                 }
                 navigate("confirm-email");
             } catch (error) {
@@ -56,9 +58,8 @@ export default function SignUpForm() {
         <div className="sign-up-form-wrapper">
             <div className="form-container">
                 <header>
-                    <div className="circle"></div>
                     <h1>Создать аккаунт</h1>
-                    <p>Уже есть аккаунт? Войти</p>
+                    <p>Уже есть аккаунт? <a href="/signin">Войти</a></p>
                 </header>
                 <main>
                     <form className="sign-up-form" onSubmit={submitForm}>
@@ -124,7 +125,9 @@ export default function SignUpForm() {
                     </form>
                 </main>
             </div>
-            <div className="img-container"></div>
+            <div className="img-container">
+               <img src={signUpIllustration} className="signup-img"/>
+            </div>
         </div>
     )
 }

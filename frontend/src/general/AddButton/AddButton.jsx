@@ -1,4 +1,4 @@
-import plus from "@/../src/icons/plus.svg";
+import plus from "@/../src/assets/plus.svg";
 
 import styles from "./AddButton.module.scss";
 
