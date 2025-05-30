@@ -17,6 +17,7 @@ class Settings(BaseSettings):
         settings.JWT_PUBLIC_KEY).decode('utf-8')
     authjwt_private_key: str = base64.b64decode(
         settings.JWT_PRIVATE_KEY).decode('utf-8')
+    authjwt_cookie_domain: str = "localhost"
     
 
 @AuthJWT.load_config

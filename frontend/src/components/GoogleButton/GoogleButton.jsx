@@ -1,19 +1,21 @@
 import { GoogleLogin } from "@react-oauth/google";
-import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-import { setUserData } from "@/store/userDataSlice.js";
-import { googleLogin } from "@/store/authSlice.js";
+import { googleLogin } from "@/api/auth.js";
 
 import './GoogleButton.scss'
 
 export default function GoogleButton() {
-    const dispatch = useDispatch();
-
+    const navigate = useNavigate();
     const login = async (credentialResponse) => {
         const token = credentialResponse.credential;
-    
-        dispatch(setUserData({token}));
-        await dispatch(googleLogin());
+        const resp = await googleLogin(token);
+
+        if (resp.status == 401) {
+          alert("Что-то пошло не так...Попробуйте войти ещё раз");
+        } else {
+          navigate("login");
+        }
       };
 
     return (

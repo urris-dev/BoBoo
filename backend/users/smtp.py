@@ -17,7 +17,7 @@ async def send_email_confirmation_code(username: str, user_email: str, code: str
 
     Благодарим Вас за интерес к нашему сервису BoBoo! Для завершения процесса регистрации аккаунта просим Вас подтвердить адрес электронной почты, перейдя по ссылке ниже и введя специальный код.
     
-    Ссылка: {settings.CLIENT_ORIGIN}/signup/confirm-email
+    Ссылка: {settings.CLIENT_ORIGIN}/confirm-email
     Код подтверждения: {code}
 
     Если Вы не регистрировались на BoBoo, пожалуйста проигнорируйте это письмо."""
