@@ -14,7 +14,7 @@ export default function GoogleButton() {
         if (resp.status == 401) {
           alert("Что-то пошло не так...Попробуйте войти ещё раз");
         } else {
-          navigate("login");
+          navigate("workspace");
         }
       };
 

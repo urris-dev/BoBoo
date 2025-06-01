@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Response, Body
 
 import oauth2
 from dependencies import check_access_token, check_refresh_token
@@ -49,7 +49,7 @@ async def user_about(Authorize: oauth2.AuthJWT = Depends()):
 
 
 @user_router.post("/send-password-reset-code", responses={404: {}})
-async def password_reset(email: str):
+async def password_reset(email: str = Body(embed=True)):
     return await services.password_reset(email)
 
 

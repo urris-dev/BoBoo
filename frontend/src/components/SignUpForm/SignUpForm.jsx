@@ -51,7 +51,7 @@ export default function SignUpForm() {
                 navigate("confirm-email", {state: {email: email}});
             }
             if (resp.status == 409) {
-                navigate("login");
+                navigate("login", {state: {email: email}});
             }
         } else {
             setError("Введённые данные некорректны");

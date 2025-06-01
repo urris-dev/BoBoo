@@ -54,3 +54,60 @@ export const googleLogin = async (token) => {
 
     return response;
 };
+
+export const login = async (email, password) => {
+    const state = store.getState();
+    const apiData = state.api;
+
+    const response = await fetch(new URL('login', apiData.authApiURL).href, {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password
+        }),
+    });
+
+    return response;
+}
+
+export const sendPasswordResetCode = async (email) => {
+    const state = store.getState();
+    const apiData = state.api;
+
+    const response = await fetch(new URL('send-password-reset-code', apiData.authApiURL).href, {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email
+        }),
+    });
+
+    return response;
+}
+
+export const resetPassword = async (email, code, password) => {
+    const state = store.getState();
+    const apiData = state.api;
+
+    const response = await fetch(new URL('reset-password', apiData.authApiURL).href, {
+        method: 'PATCH',
+        credentials: "include",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email,
+            code: code,
+            password: password
+        }),
+    });
+
+    return response;    
+}

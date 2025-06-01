@@ -8,7 +8,6 @@ SMTP_HOST = settings.SMTP_HOST
 SMTP_PORT = settings.SMTP_PORT
 SMTP_USER = settings.SMTP_USER
 SMTP_PASSWORD = settings.SMTP_APPLICATION_PASSWORD
-SERVER_ORIGIN = settings.SERVER_ORIGIN
 
 
 async def send_email_confirmation_code(username: str, user_email: str, code: str): 
@@ -38,7 +37,7 @@ async def send_password_reset_code(username: str, user_email: str, code: str):
 
     Для сброса пароля Вам необходимо перейти по ссылке ниже и ввести специальный код. 
     
-    Ссылка: {SERVER_ORIGIN}/reset-password
+    Ссылка: {settings.CLIENT_ORIGIN}/reset-password
     Код подтверждения: {code}
 
     Если Вы не выбирали опцию сброса пароля от аккаунта на BoBoo, пожалуйста проигнорируйте это письмо."""
